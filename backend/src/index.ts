@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { connectDatabases } from './database/connection';
 import { logger } from './utils/logger';
 import { errorHandler } from './middleware/errorHandler';
+import { performanceMiddleware } from './middleware/performance';
 import routes from './routes';
 
 // Load environment variables
@@ -21,6 +22,9 @@ app.use(cors());
 app.use(compression());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Performance monitoring and optimization
+app.use(performanceMiddleware);
 
 // Health check
 app.get('/health', (req, res) => {
