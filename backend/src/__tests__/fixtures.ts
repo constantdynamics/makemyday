@@ -1,4 +1,4 @@
-import { User, CreateUserDto } from '@makemyday/shared';
+import { User, CreateUserDto, Language } from '@makemyday/shared';
 
 export const mockUser: User = {
   id: '123e4567-e89b-12d3-a456-426614174000',
@@ -6,7 +6,7 @@ export const mockUser: User = {
   passwordHash: '$2b$10$abcdefghijklmnopqrstuvwxyz123456789',
   profile: {
     displayName: 'Test User',
-    language: 'en',
+    language: Language.EN,
     country: 'NLD',
   },
   preferences: {
@@ -37,7 +37,7 @@ export const mockCreateUserDto: CreateUserDto = {
   email: 'newuser@example.com',
   password: 'SecurePass123',
   displayName: 'New User',
-  language: 'en',
+  language: Language.EN,
   country: 'NLD',
 };
 

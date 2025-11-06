@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import jwt, { SignOptions } from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 import { pgPool } from '../database/connection';
 import { config } from '../config';
@@ -113,14 +113,19 @@ export class AuthService {
   }
 
   private static async generateTokens(userId: string): Promise<AuthTokens> {
-    const accessToken = jwt.sign({ userId, type: 'access' } as TokenPayload, config.jwt.secret, {
-      expiresIn: config.jwt.expiresIn,
-    });
+    const expiresIn = config.jwt.expiresIn;
+    const refreshExpiresIn = config.jwt.refreshExpiresIn;
+
+    const accessToken = jwt.sign(
+      { userId, type: 'access' } as TokenPayload,
+      config.jwt.secret,
+      { expiresIn }
+    );
 
     const refreshToken = jwt.sign(
       { userId, type: 'refresh' } as TokenPayload,
       config.jwt.refreshSecret,
-      { expiresIn: config.jwt.refreshExpiresIn }
+      { expiresIn: refreshExpiresIn }
     );
 
     // Store refresh token in database

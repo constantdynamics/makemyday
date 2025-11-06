@@ -1,3 +1,5 @@
+import { TranslatedText } from '@makemyday/shared';
+
 // Complete challenge database with 150+ challenges
 export const CHALLENGES = [
   // === PHOTO CHALLENGES (40) ===
@@ -243,10 +245,10 @@ export const CHALLENGES = [
 
 // Generate more challenges programmatically to reach 150+
 for (let i = 0; i < 100; i++) {
-  const templates = [
-    { title: { nl: `Vind object #${i}`, en: `Find object #${i}` }, cat: 'DISCOVERY', diff: 2, dur: 15, pts: 15 },
-    { title: { nl: `Foto uitdaging #${i}`, en: `Photo challenge #${i}` }, cat: 'PHOTO', diff: 2, dur: 20, pts: 15 },
-    { title: { nl: `Social missie #${i}`, en: `Social mission #${i}` }, cat: 'INTERACTION', diff: 2, dur: 15, pts: 15 },
+  const templates: Array<{ title: TranslatedText; cat: string; diff: number; dur: number; pts: number }> = [
+    { title: { nl: `Vind object #${i}`, en: `Find object #${i}`, de: `Objekt finden #${i}` }, cat: 'DISCOVERY', diff: 2, dur: 15, pts: 15 },
+    { title: { nl: `Foto uitdaging #${i}`, en: `Photo challenge #${i}`, de: `Foto-Herausforderung #${i}` }, cat: 'PHOTO', diff: 2, dur: 20, pts: 15 },
+    { title: { nl: `Social missie #${i}`, en: `Social mission #${i}`, de: `Soziale Mission #${i}` }, cat: 'INTERACTION', diff: 2, dur: 15, pts: 15 },
   ];
 
   const template = templates[i % templates.length];
@@ -254,7 +256,7 @@ for (let i = 0; i < 100; i++) {
   if (i < 60) { // Add 60 more varied challenges
     CHALLENGES.push({
       title: template.title,
-      description: { nl: `Uitdaging ${i + 50}`, en: `Challenge ${i + 50}` },
+      description: { nl: `Uitdaging ${i + 50}`, en: `Challenge ${i + 50}`, de: `Herausforderung ${i + 50}` },
       type: 'UNIVERSAL',
       category: template.cat as any,
       difficulty: template.diff,

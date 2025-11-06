@@ -15,6 +15,10 @@ interface OSMElement {
   center?: { lat: number; lon: number };
 }
 
+interface OSMResponse {
+  elements: OSMElement[];
+}
+
 export class OSMService {
   private static CACHE_TTL = 604800; // 1 week
 
@@ -46,7 +50,7 @@ export class OSMService {
         throw new Error(`OSM API error: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const data = await response.json() as OSMResponse;
       const pois = this.processOSMData(data.elements);
 
       // Cache results
@@ -194,7 +198,7 @@ export class OSMService {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       });
 
-      const data = await response.json();
+      const data = await response.json() as OSMResponse;
 
       if (data.elements && data.elements.length > 0) {
         return data.elements[0].tags?.opening_hours || null;

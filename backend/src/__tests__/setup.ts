@@ -18,3 +18,10 @@ global.console = {
   error: jest.fn(), // Suppress error logs in tests
   warn: jest.fn(),
 };
+
+// Dummy test to satisfy Jest requirement
+describe('Test Setup', () => {
+  it('should have test environment configured', () => {
+    expect(process.env.NODE_ENV).toBe('test');
+  });
+});

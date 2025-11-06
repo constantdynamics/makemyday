@@ -1,4 +1,4 @@
-import { GenerateActivityDto, ActivitySuggestion, Activity } from '@makemyday/shared';
+import { GenerateActivityDto, ActivitySuggestion, Activity, ActivitySource } from '@makemyday/shared';
 import { calculateDistance, calculateMaxDistance, TRANSPORT_SPEEDS } from '@makemyday/shared';
 import { OSMService } from './OSMService';
 import { RoutingService } from './RoutingService';
@@ -253,7 +253,7 @@ export class ActivityService {
     return {
       id: challenge._id.toString(),
       type: 'CHALLENGE',
-      source: 'CUSTOM',
+      source: ActivitySource.CUSTOM,
       title: challenge.title,
       description: challenge.description,
       location: {
@@ -291,19 +291,20 @@ export class ActivityService {
     }
 
     // Update statistics
+    const ratings = activity.statistics.ratings as any;
     const totalRatings =
-      activity.statistics.ratings.get('1')! +
-      activity.statistics.ratings.get('2')! +
-      activity.statistics.ratings.get('3')! +
-      activity.statistics.ratings.get('4')! +
-      activity.statistics.ratings.get('5')!;
+      (ratings['1'] || 0) +
+      (ratings['2'] || 0) +
+      (ratings['3'] || 0) +
+      (ratings['4'] || 0) +
+      (ratings['5'] || 0);
 
     const currentTotal = activity.statistics.averageRating * totalRatings;
     const newTotal = currentTotal + rating;
     const newCount = totalRatings + 1;
 
     activity.statistics.averageRating = newTotal / newCount;
-    activity.statistics.ratings.set(rating.toString(), (activity.statistics.ratings.get(rating.toString()) || 0) + 1);
+    ratings[rating.toString()] = (ratings[rating.toString()] || 0) + 1;
     activity.statistics.timesCompleted += 1;
 
     await activity.save();

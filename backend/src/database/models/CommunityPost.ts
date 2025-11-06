@@ -64,7 +64,7 @@ const communityPostSchema = new Schema<CommunityPostDocument>(
       default: 0,
     },
     visibility: {
-      type: String,
+      type: String as any,
       enum: ['PUBLIC', 'FRIENDS', 'PRIVATE'],
       default: 'PUBLIC',
     },
