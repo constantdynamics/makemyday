@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: makemyday-postgres
+    environment:
+      POSTGRES_DB: makemyday
+      POSTGRES_USER: makemyday
+      POSTGRES_PASSWORD: makemyday_dev_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U makemyday"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    container_name: makemyday-mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: makemyday
+      MONGO_INITDB_ROOT_PASSWORD: makemyday_dev_password
+      MONGO_INITDB_DATABASE: makemyday
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: makemyday-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: makemyday-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      POSTGRES_URL: postgresql://makemyday:makemyday_dev_password@postgres:5432/makemyday
+      MONGODB_URL: mongodb://makemyday:makemyday_dev_password@mongodb:27017/makemyday?authSource=admin
+      REDIS_URL: redis://redis:6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+volumes:
+  postgres-data:
+  mongodb-data:
+  redis-data:
