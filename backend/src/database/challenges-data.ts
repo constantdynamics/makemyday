@@ -255,8 +255,8 @@ for (let i = 0; i < 100; i++) {
 
   if (i < 60) { // Add 60 more varied challenges
     CHALLENGES.push({
-      title: template.title,
-      description: { nl: `Uitdaging ${i + 50}`, en: `Challenge ${i + 50}`, de: `Herausforderung ${i + 50}` },
+      title: template.title as { nl: string; en: string; de: string },
+      description: { nl: `Uitdaging ${i + 50}`, en: `Challenge ${i + 50}`, de: `Herausforderung ${i + 50}` } as { nl: string; en: string; de: string },
       type: 'UNIVERSAL',
       category: template.cat as any,
       difficulty: template.diff,

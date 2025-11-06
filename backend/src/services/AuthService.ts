@@ -113,19 +113,16 @@ export class AuthService {
   }
 
   private static async generateTokens(userId: string): Promise<AuthTokens> {
-    const expiresIn = config.jwt.expiresIn;
-    const refreshExpiresIn = config.jwt.refreshExpiresIn;
-
     const accessToken = jwt.sign(
-      { userId, type: 'access' } as TokenPayload,
+      { userId, type: 'access' },
       config.jwt.secret,
-      { expiresIn }
+      { expiresIn: '15m' }
     );
 
     const refreshToken = jwt.sign(
-      { userId, type: 'refresh' } as TokenPayload,
+      { userId, type: 'refresh' },
       config.jwt.refreshSecret,
-      { expiresIn: refreshExpiresIn }
+      { expiresIn: '7d' }
     );
 
     // Store refresh token in database
