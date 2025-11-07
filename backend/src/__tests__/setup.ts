@@ -19,6 +19,19 @@ global.console = {
   warn: jest.fn(),
 };
 
+// Global teardown to close connections
+afterAll(async () => {
+  // Close Redis connection if it exists
+  try {
+    const { redis } = await import('../database/connection');
+    if (redis) {
+      await redis.quit();
+    }
+  } catch (error) {
+    // Ignore errors during cleanup
+  }
+});
+
 // Dummy test to satisfy Jest requirement
 describe('Test Setup', () => {
   it('should have test environment configured', () => {

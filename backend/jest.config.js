@@ -4,6 +4,9 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.ts', '**/*.test.ts'],
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(node-fetch)/)'
+  ],
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.test.ts',

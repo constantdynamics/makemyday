@@ -9,7 +9,8 @@ jest.mock('../../database/connection');
 jest.mock('bcrypt');
 jest.mock('jsonwebtoken');
 
-const mockPgPool = pgPool as jest.Mocked<typeof pgPool>;
+const mockPgPool = pgPool as any;
+mockPgPool.query = jest.fn();
 const mockBcrypt = bcrypt as jest.Mocked<typeof bcrypt>;
 const mockJwt = jwt as jest.Mocked<typeof jwt>;
 
