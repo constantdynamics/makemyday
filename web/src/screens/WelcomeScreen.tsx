@@ -1,56 +1,59 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import './WelcomeScreen.css';
 
 export default function WelcomeScreen() {
+  const { t } = useLanguage();
+
   return (
     <div className="welcome-screen">
       <div className="welcome-content">
         <div className="logo">
           <span className="logo-emoji">🎯</span>
-          <h1>Make My Day</h1>
+          <h1>{t('welcome.title')}</h1>
         </div>
 
         <p className="tagline">
-          Your personal adventure companion
+          {t('welcome.subtitle')}
+        </p>
+
+        <p className="description">
+          {t('welcome.description')}
         </p>
 
         <div className="features">
           <div className="feature">
+            <span className="feature-icon">🔍</span>
+            <h3>{t('welcome.features.discover.title')}</h3>
+            <p>{t('welcome.features.discover.description')}</p>
+          </div>
+
+          <div className="feature">
             <span className="feature-icon">🎲</span>
-            <h3>Spin the Wheel</h3>
-            <p>Discover random activities near you</p>
+            <h3>{t('welcome.features.spin.title')}</h3>
+            <p>{t('welcome.features.spin.description')}</p>
           </div>
 
           <div className="feature">
-            <span className="feature-icon">🗺️</span>
-            <h3>Explore Nearby</h3>
-            <p>Find interesting places within your range</p>
-          </div>
-
-          <div className="feature">
-            <span className="feature-icon">🏆</span>
-            <h3>Complete Challenges</h3>
-            <p>Earn points and unlock achievements</p>
+            <span className="feature-icon">📊</span>
+            <h3>{t('welcome.features.track.title')}</h3>
+            <p>{t('welcome.features.track.description')}</p>
           </div>
 
           <div className="feature">
             <span className="feature-icon">👥</span>
-            <h3>Share Adventures</h3>
-            <p>Connect with the community</p>
+            <h3>{t('welcome.features.community.title')}</h3>
+            <p>{t('welcome.features.community.description')}</p>
           </div>
         </div>
 
         <div className="cta-buttons">
           <Link to="/register" className="btn btn-primary">
-            Get Started
+            {t('welcome.getStarted')}
           </Link>
           <Link to="/login" className="btn btn-secondary">
-            Sign In
+            {t('welcome.login')}
           </Link>
-        </div>
-
-        <div className="pwa-benefits">
-          <p>💡 <strong>Tip:</strong> Install our app for offline access and push notifications!</p>
         </div>
       </div>
     </div>

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import './AuthScreen.css';
 
 export default function LoginScreen() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,16 +24,16 @@ export default function LoginScreen() {
   return (
     <div className="auth-screen">
       <div className="auth-container">
-        <Link to="/" className="back-button">← Back</Link>
+        <Link to="/" className="back-button">← {t('common.back')}</Link>
 
         <div className="auth-header">
-          <h1>Welcome Back!</h1>
-          <p>Sign in to continue your adventures</p>
+          <h1>{t('auth.login.title')}</h1>
+          <p>{t('auth.login.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.login.email')}</label>
             <input
               type="email"
               id="email"
@@ -43,7 +45,7 @@ export default function LoginScreen() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.login.password')}</label>
             <input
               type="password"
               id="password"
@@ -55,13 +57,15 @@ export default function LoginScreen() {
             />
           </div>
 
+          <a href="#" className="forgot-password">{t('auth.login.forgotPassword')}</a>
+
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('common.loading') : t('auth.login.loginButton')}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Don't have an account? <Link to="/register">Sign up</Link></p>
+          <p>{t('auth.login.noAccount')} <Link to="/register">{t('auth.login.signUp')}</Link></p>
         </div>
       </div>
     </div>

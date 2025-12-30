@@ -79,10 +79,38 @@
   border-color: var(--primary-color);
 }
 
+.forgot-password {
+  text-align: right;
+  font-size: 14px;
+  color: var(--primary);
+  text-decoration: none;
+  margin: -8px 0 8px 0;
+  display: block;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
 .auth-footer {
   text-align: center;
   margin-top: 24px;
   color: #6b7280;
+}
+
+.auth-footer .terms-text {
+  font-size: 13px;
+  margin-top: 16px;
+  line-height: 1.5;
+}
+
+.auth-footer .terms-text a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.auth-footer .terms-text a:hover {
+  text-decoration: underline;
 }
 
 .auth-footer a {

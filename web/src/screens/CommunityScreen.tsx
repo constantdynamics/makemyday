@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import './CommunityScreen.css';
 
 const mockPosts = [
@@ -9,9 +10,11 @@ const mockPosts = [
     activity: 'Van Gogh Museum',
     location: 'Amsterdam',
     caption: 'Amazing art collection! The Sunflowers were breathtaking 🌻',
+    captionNL: 'Geweldige kunstcollectie! De Zonnebloemen waren adembenemend 🌻',
     likes: 24,
     comments: 5,
-    time: '2h ago'
+    time: '2h ago',
+    timeNL: '2u geleden'
   },
   {
     id: 2,
@@ -20,9 +23,11 @@ const mockPosts = [
     activity: 'Vondelpark',
     location: 'Amsterdam',
     caption: 'Perfect afternoon for a picnic! Found a hidden spot by the pond 🦆',
+    captionNL: 'Perfecte middag voor een picknick! Verstopt plekje bij de vijver gevonden 🦆',
     likes: 18,
     comments: 3,
-    time: '5h ago'
+    time: '5h ago',
+    timeNL: '5u geleden'
   },
   {
     id: 3,
@@ -31,25 +36,37 @@ const mockPosts = [
     activity: 'Street Food Market',
     location: 'Rotterdam',
     caption: 'Best bitterballen I\'ve ever had! 🍺',
+    captionNL: 'Beste bitterballen die ik ooit heb gehad! 🍺',
     likes: 31,
     comments: 7,
-    time: '1d ago'
+    time: '1d ago',
+    timeNL: '1d geleden'
   }
 ];
 
 export default function CommunityScreen() {
+  const { t, language } = useLanguage();
+
   return (
     <div className="community-screen">
       <header className="community-header">
-        <Link to="/dashboard" className="back-link">← Back</Link>
-        <h1>👥 Community</h1>
+        <Link to="/dashboard" className="back-link">← {t('common.back')}</Link>
+        <h1>👥 {t('community.title')}</h1>
       </header>
 
       <main className="community-main">
+        <div className="tabs">
+          <button className="tab active">{t('community.recent')}</button>
+          <button className="tab">{t('community.trending')}</button>
+          <button className="tab">{t('community.following')}</button>
+        </div>
+
         <div className="create-post">
-          <button className="create-post-btn">
-            <span>➕</span> Share Your Adventure
-          </button>
+          <input
+            type="text"
+            placeholder={t('community.writePost')}
+            className="create-post-input"
+          />
         </div>
 
         <div className="feed">
@@ -65,11 +82,11 @@ export default function CommunityScreen() {
                     </div>
                   </div>
                 </div>
-                <div className="post-time">{post.time}</div>
+                <div className="post-time">{language === 'nl' ? post.timeNL : post.time}</div>
               </div>
 
               <div className="post-content">
-                <p>{post.caption}</p>
+                <p>{language === 'nl' ? post.captionNL : post.caption}</p>
               </div>
 
               <div className="post-actions">
@@ -80,20 +97,32 @@ export default function CommunityScreen() {
                   💬 {post.comments}
                 </button>
                 <button className="action-btn">
-                  🔗 Share
+                  🔗 {t('community.share')}
                 </button>
               </div>
             </div>
           ))}
         </div>
-
-        <div className="community-empty-state" style={{ display: 'none' }}>
-          <span className="empty-icon">👥</span>
-          <h3>No Posts Yet</h3>
-          <p>Be the first to share your adventure!</p>
-          <button className="btn btn-primary">Create Post</button>
-        </div>
       </main>
+
+      <nav className="mobile-nav">
+        <Link to="/dashboard" className="nav-item">
+          <span>🏠</span>
+          <span>{t('dashboard.nav.home')}</span>
+        </Link>
+        <Link to="/community" className="nav-item active">
+          <span>👥</span>
+          <span>{t('dashboard.nav.community')}</span>
+        </Link>
+        <Link to="/premium" className="nav-item">
+          <span>⭐</span>
+          <span>Premium</span>
+        </Link>
+        <Link to="/settings" className="nav-item">
+          <span>⚙️</span>
+          <span>{t('settings.title')}</span>
+        </Link>
+      </nav>
     </div>
   );
 }

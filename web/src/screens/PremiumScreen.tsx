@@ -1,108 +1,138 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import './PremiumScreen.css';
 
 export default function PremiumScreen() {
+  const { t } = useLanguage();
+
   return (
     <div className="premium-screen">
       <header className="premium-header">
-        <Link to="/dashboard" className="back-link">← Back</Link>
+        <Link to="/dashboard" className="back-link">← {t('common.back')}</Link>
         <h1>⭐ Premium</h1>
       </header>
 
       <main className="premium-main">
         <section className="premium-hero">
-          <h2>Unlock the Full Experience</h2>
-          <p>Get access to exclusive features and unlimited adventures</p>
+          <h2>{t('premium.title')}</h2>
+          <p>{t('premium.subtitle')}</p>
         </section>
 
         <section className="pricing">
           <div className="price-card featured">
-            <div className="badge">Most Popular</div>
-            <h3>Yearly</h3>
-            <div className="price">€12<span>/year</span></div>
-            <p className="savings">Save 33%</p>
+            <div className="badge">{t('premium.save')}</div>
+            <h3>{t('premium.yearly')}</h3>
+            <div className="price">{t('premium.yearlyPrice')}<span>{t('premium.perYear')}</span></div>
+            <p className="savings">{t('premium.save')}</p>
             <ul className="features">
-              <li>✅ Unlimited spins</li>
-              <li>✅ Daily discovery menu</li>
-              <li>✅ Themed adventures</li>
-              <li>✅ Vacation planner (2x/year)</li>
-              <li>✅ Premium challenges</li>
-              <li>✅ Priority support</li>
+              <li>✅ {t('premium.features.unlimited')}</li>
+              <li>✅ {t('premium.features.themed')}</li>
+              <li>✅ {t('premium.features.advanced')}</li>
+              <li>✅ {t('premium.features.priority')}</li>
+              <li>✅ {t('premium.features.offline')}</li>
+              <li>✅ {t('premium.features.custom')}</li>
             </ul>
-            <button className="btn btn-primary">Start 7-Day Free Trial</button>
+            <button className="btn btn-primary">{t('premium.startTrial')}</button>
           </div>
 
           <div className="price-card">
-            <h3>Monthly</h3>
-            <div className="price">€1.50<span>/month</span></div>
+            <h3>{t('premium.monthly')}</h3>
+            <div className="price">{t('premium.monthlyPrice')}<span>{t('premium.perMonth')}</span></div>
             <p className="savings">&nbsp;</p>
             <ul className="features">
-              <li>✅ Unlimited spins</li>
-              <li>✅ Daily discovery menu</li>
-              <li>✅ Themed adventures</li>
-              <li>✅ Vacation planner (2x/year)</li>
-              <li>✅ Premium challenges</li>
-              <li>✅ Priority support</li>
+              <li>✅ {t('premium.features.unlimited')}</li>
+              <li>✅ {t('premium.features.themed')}</li>
+              <li>✅ {t('premium.features.advanced')}</li>
+              <li>✅ {t('premium.features.priority')}</li>
+              <li>✅ {t('premium.features.offline')}</li>
+              <li>✅ {t('premium.features.custom')}</li>
             </ul>
-            <button className="btn btn-secondary">Start 7-Day Free Trial</button>
+            <button className="btn btn-secondary">{t('premium.choosePlan')}</button>
           </div>
         </section>
 
         <section className="premium-features">
-          <h3>Premium Features</h3>
+          <h3>{t('premium.features.title')}</h3>
           <div className="features-grid">
             <div className="feature-item">
-              <span className="feature-icon">🍽️</span>
-              <h4>Daily Discovery Menu</h4>
-              <p>3 personalized activity suggestions every day</p>
+              <span className="feature-icon">🎲</span>
+              <h4>{t('premium.features.unlimited')}</h4>
+              <p>Onbeperkt draaien aan het rad</p>
             </div>
 
             <div className="feature-item">
               <span className="feature-icon">🎨</span>
-              <h4>Themed Adventures</h4>
-              <p>Curated tours: Historical, Culinary, Art, Nature & Hidden Gems</p>
-            </div>
-
-            <div className="feature-item">
-              <span className="feature-icon">✈️</span>
-              <h4>Vacation Explorer</h4>
-              <p>Plan trips with 20+ activity bucketlists (2x per year)</p>
+              <h4>{t('premium.features.themed')}</h4>
+              <p>Cultureel, Culinair, Kunst, Natuur & Verborgen Pareltjes</p>
             </div>
 
             <div className="feature-item">
               <span className="feature-icon">📊</span>
-              <h4>Advanced Stats</h4>
-              <p>Detailed insights into your adventures and achievements</p>
-            </div>
-
-            <div className="feature-item">
-              <span className="feature-icon">🔥</span>
-              <h4>Exclusive Challenges</h4>
-              <p>Access premium-only challenges and events</p>
+              <h4>{t('premium.features.advanced')}</h4>
+              <p>Gedetailleerde inzichten in je avonturen</p>
             </div>
 
             <div className="feature-item">
               <span className="feature-icon">💬</span>
-              <h4>Priority Support</h4>
-              <p>Get help faster with dedicated support</p>
+              <h4>{t('premium.features.priority')}</h4>
+              <p>Snellere hulp met toegewijde support</p>
+            </div>
+
+            <div className="feature-item">
+              <span className="feature-icon">📱</span>
+              <h4>{t('premium.features.offline')}</h4>
+              <p>Gebruik de app zonder internetverbinding</p>
+            </div>
+
+            <div className="feature-item">
+              <span className="feature-icon">🎯</span>
+              <h4>{t('premium.features.custom')}</h4>
+              <p>Maak je eigen uitdagingen en doelen</p>
             </div>
           </div>
         </section>
 
         <section className="testimonials">
-          <h3>What Our Users Say</h3>
+          <h3>{t('premium.testimonials.title')}</h3>
           <div className="testimonial-grid">
             <div className="testimonial">
-              <p>"The daily menu saves me so much time! I always know what to do."</p>
-              <span>- Sarah, Amsterdam</span>
+              <p>"{t('premium.testimonials.sarah.text')}"</p>
+              <span>- {t('premium.testimonials.sarah.author')}</span>
             </div>
             <div className="testimonial">
-              <p>"Themed adventures helped me discover parts of my city I never knew existed!"</p>
-              <span>- Mark, Rotterdam</span>
+              <p>"{t('premium.testimonials.john.text')}"</p>
+              <span>- {t('premium.testimonials.john.author')}</span>
+            </div>
+            <div className="testimonial">
+              <p>"{t('premium.testimonials.emma.text')}"</p>
+              <span>- {t('premium.testimonials.emma.author')}</span>
             </div>
           </div>
         </section>
+
+        <section className="guarantee">
+          <p>✅ {t('premium.guarantee')}</p>
+        </section>
       </main>
+
+      <nav className="mobile-nav">
+        <Link to="/dashboard" className="nav-item">
+          <span>🏠</span>
+          <span>{t('dashboard.nav.home')}</span>
+        </Link>
+        <Link to="/community" className="nav-item">
+          <span>👥</span>
+          <span>{t('dashboard.nav.community')}</span>
+        </Link>
+        <Link to="/premium" className="nav-item active">
+          <span>⭐</span>
+          <span>Premium</span>
+        </Link>
+        <Link to="/settings" className="nav-item">
+          <span>⚙️</span>
+          <span>{t('settings.title')}</span>
+        </Link>
+      </nav>
     </div>
   );
 }

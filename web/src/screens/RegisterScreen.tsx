@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
 import './AuthScreen.css';
 
 export default function RegisterScreen() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,16 +34,16 @@ export default function RegisterScreen() {
   return (
     <div className="auth-screen">
       <div className="auth-container">
-        <Link to="/" className="back-button">← Back</Link>
+        <Link to="/" className="back-button">← {t('common.back')}</Link>
 
         <div className="auth-header">
-          <h1>Create Account</h1>
-          <p>Start your adventure journey today!</p>
+          <h1>{t('auth.register.title')}</h1>
+          <p>{t('auth.register.subtitle')}</p>
         </div>
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">Full Name</label>
+            <label htmlFor="name">{t('auth.register.name')}</label>
             <input
               type="text"
               id="name"
@@ -53,7 +55,7 @@ export default function RegisterScreen() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">{t('auth.register.email')}</label>
             <input
               type="email"
               id="email"
@@ -65,7 +67,7 @@ export default function RegisterScreen() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">{t('auth.register.password')}</label>
             <input
               type="password"
               id="password"
@@ -78,7 +80,7 @@ export default function RegisterScreen() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">{t('auth.register.confirmPassword')}</label>
             <input
               type="password"
               id="confirmPassword"
@@ -91,12 +93,15 @@ export default function RegisterScreen() {
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create Account'}
+            {loading ? t('common.loading') : t('auth.register.registerButton')}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Already have an account? <Link to="/login">Sign in</Link></p>
+          <p>{t('auth.register.haveAccount')} <Link to="/login">{t('auth.register.signIn')}</Link></p>
+          <p className="terms-text">
+            {t('auth.register.terms')} <a href="#">{t('auth.register.termsLink')}</a> {t('auth.register.and')} <a href="#">{t('auth.register.privacyLink')}</a>
+          </p>
         </div>
       </div>
     </div>
