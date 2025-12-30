@@ -1,0 +1,11 @@
+export { default as TargetIcon } from './TargetIcon';
+export { default as DiceIcon } from './DiceIcon';
+export { default as StarIcon } from './StarIcon';
+export { default as HomeIcon } from './HomeIcon';
+export { default as SearchIcon } from './SearchIcon';
+export { default as UsersIcon } from './UsersIcon';
+export { default as SettingsIcon } from './SettingsIcon';
+export { default as CheckIcon } from './CheckIcon';
+export { default as ChartIcon } from './ChartIcon';
+export { default as FireIcon } from './FireIcon';
+export { default as TrophyIcon } from './TrophyIcon';

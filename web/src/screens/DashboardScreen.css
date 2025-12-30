@@ -14,6 +14,16 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+.home-link {
+  text-decoration: none;
+  color: white;
+  transition: opacity 0.2s;
+}
+
+.home-link:hover {
+  opacity: 0.9;
+}
+
 .dashboard-header h1 {
   font-size: 24px;
   margin: 0;
@@ -69,15 +79,36 @@
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
 }
 
-.spin-card h2 {
-  font-size: 32px;
-  margin-bottom: 12px;
+.spin-card h3 {
+  font-size: 24px;
+  margin-bottom: 24px;
 }
 
-.spin-card p {
-  font-size: 18px;
-  margin-bottom: 32px;
+.activity-result {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.activity-label {
+  font-size: 14px;
   opacity: 0.9;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.activity-name {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .spin-button {
@@ -95,9 +126,23 @@
   gap: 12px;
 }
 
-.spin-button:hover {
+.spin-button:hover:not(:disabled) {
   transform: scale(1.05);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.spin-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin-button.spinning .spin-icon {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .spin-icon {

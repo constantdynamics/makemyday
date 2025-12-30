@@ -79,6 +79,7 @@ const translations = {
       description: 'Ontdek unieke activiteiten bij jou in de buurt, draai aan het rad en maak elke dag bijzonder',
       getStarted: 'Aan de slag',
       login: 'Inloggen',
+      tryGuest: 'Probeer zonder account',
       features: {
         discover: {
           title: 'Ontdek Activiteiten',
@@ -276,6 +277,7 @@ const translations = {
       description: 'Discover unique activities near you, spin the wheel, and make every day special',
       getStarted: 'Get Started',
       login: 'Login',
+      tryGuest: 'Try without account',
       features: {
         discover: {
           title: 'Discover Activities',

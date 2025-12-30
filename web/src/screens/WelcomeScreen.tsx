@@ -48,10 +48,13 @@ export default function WelcomeScreen() {
         </div>
 
         <div className="cta-buttons">
-          <Link to="/register" className="btn btn-primary">
+          <Link to="/dashboard" className="btn btn-primary">
+            {t('welcome.tryGuest')}
+          </Link>
+          <Link to="/register" className="btn btn-secondary">
             {t('welcome.getStarted')}
           </Link>
-          <Link to="/login" className="btn btn-secondary">
+          <Link to="/login" className="btn btn-link">
             {t('welcome.login')}
           </Link>
         </div>
