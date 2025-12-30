@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
+import { UsersIcon, HomeIcon, SearchIcon, SettingsIcon, HeartIcon, MessageIcon, ShareIcon, MapPinIcon } from '../components/icons';
 import './CommunityScreen.css';
 
 const mockPosts = [
@@ -51,7 +52,10 @@ export default function CommunityScreen() {
     <div className="community-screen">
       <header className="community-header">
         <Link to="/dashboard" className="back-link">← {t('common.back')}</Link>
-        <h1>👥 {t('community.title')}</h1>
+        <h1>
+          <UsersIcon size={28} color="white" className="inline-icon" />
+          {' '}{t('community.title')}
+        </h1>
       </header>
 
       <main className="community-main">
@@ -78,7 +82,8 @@ export default function CommunityScreen() {
                   <div>
                     <div className="user-name">{post.user}</div>
                     <div className="post-activity">
-                      📍 {post.activity} • {post.location}
+                      <MapPinIcon size={14} className="inline-icon" color="#6b7280" />
+                      {' '}{post.activity} • {post.location}
                     </div>
                   </div>
                 </div>
@@ -91,13 +96,16 @@ export default function CommunityScreen() {
 
               <div className="post-actions">
                 <button className="action-btn">
-                  ❤️ {post.likes}
+                  <HeartIcon size={18} />
+                  <span>{post.likes}</span>
                 </button>
                 <button className="action-btn">
-                  💬 {post.comments}
+                  <MessageIcon size={18} />
+                  <span>{post.comments}</span>
                 </button>
                 <button className="action-btn">
-                  🔗 {t('community.share')}
+                  <ShareIcon size={18} />
+                  <span>{t('community.share')}</span>
                 </button>
               </div>
             </div>
@@ -107,19 +115,19 @@ export default function CommunityScreen() {
 
       <nav className="mobile-nav">
         <Link to="/dashboard" className="nav-item">
-          <span>🏠</span>
+          <HomeIcon size={24} />
           <span>{t('dashboard.nav.home')}</span>
         </Link>
+        <Link to="/explore" className="nav-item">
+          <SearchIcon size={24} />
+          <span>{t('dashboard.nav.explore')}</span>
+        </Link>
         <Link to="/community" className="nav-item active">
-          <span>👥</span>
+          <UsersIcon size={24} />
           <span>{t('dashboard.nav.community')}</span>
         </Link>
-        <Link to="/premium" className="nav-item">
-          <span>⭐</span>
-          <span>Premium</span>
-        </Link>
         <Link to="/settings" className="nav-item">
-          <span>⚙️</span>
+          <SettingsIcon size={24} />
           <span>{t('settings.title')}</span>
         </Link>
       </nav>

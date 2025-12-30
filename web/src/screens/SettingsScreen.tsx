@@ -1,5 +1,15 @@
 import { Link } from 'react-router-dom';
 import { useLanguage, Language } from '../contexts/LanguageContext';
+import {
+  GlobeIcon,
+  CheckIcon,
+  UserIcon,
+  SettingsIcon,
+  InfoIcon,
+  HomeIcon,
+  UsersIcon,
+  StarIcon
+} from '../components/icons';
 import './SettingsScreen.css';
 
 export default function SettingsScreen() {
@@ -23,7 +33,9 @@ export default function SettingsScreen() {
         {/* Language Section */}
         <section className="settings-section">
           <div className="section-header">
-            <span className="section-icon">🌐</span>
+            <span className="section-icon">
+              <GlobeIcon size={24} color="#6366f1" />
+            </span>
             <div>
               <h2>{t('settings.language.title')}</h2>
               <p className="section-description">{t('settings.language.description')}</p>
@@ -36,7 +48,7 @@ export default function SettingsScreen() {
             >
               <span className="flag">🇳🇱</span>
               <span className="language-name">{t('settings.language.dutch')}</span>
-              {language === 'nl' && <span className="checkmark">✓</span>}
+              {language === 'nl' && <span className="checkmark"><CheckIcon size={20} color="#10b981" /></span>}
             </button>
             <button
               className={`language-option ${language === 'en' ? 'active' : ''}`}
@@ -44,7 +56,7 @@ export default function SettingsScreen() {
             >
               <span className="flag">🇬🇧</span>
               <span className="language-name">{t('settings.language.english')}</span>
-              {language === 'en' && <span className="checkmark">✓</span>}
+              {language === 'en' && <span className="checkmark"><CheckIcon size={20} color="#10b981" /></span>}
             </button>
           </div>
         </section>
@@ -52,7 +64,9 @@ export default function SettingsScreen() {
         {/* Account Section */}
         <section className="settings-section">
           <div className="section-header">
-            <span className="section-icon">👤</span>
+            <span className="section-icon">
+              <UserIcon size={24} color="#6366f1" />
+            </span>
             <h2>{t('settings.account.title')}</h2>
           </div>
           <div className="settings-list">
@@ -78,7 +92,9 @@ export default function SettingsScreen() {
         {/* Preferences Section */}
         <section className="settings-section">
           <div className="section-header">
-            <span className="section-icon">⚙️</span>
+            <span className="section-icon">
+              <SettingsIcon size={24} color="#6366f1" />
+            </span>
             <h2>{t('settings.preferences.title')}</h2>
           </div>
           <div className="settings-list">
@@ -100,7 +116,9 @@ export default function SettingsScreen() {
         {/* About Section */}
         <section className="settings-section">
           <div className="section-header">
-            <span className="section-icon">ℹ️</span>
+            <span className="section-icon">
+              <InfoIcon size={24} color="#6366f1" />
+            </span>
             <h2>{t('settings.about.title')}</h2>
           </div>
           <div className="settings-list">
@@ -132,19 +150,27 @@ export default function SettingsScreen() {
       {/* Mobile Navigation */}
       <nav className="mobile-nav">
         <Link to="/dashboard" className="nav-item">
-          <span className="nav-icon">🏠</span>
+          <span className="nav-icon">
+            <HomeIcon size={24} />
+          </span>
           <span className="nav-label">{t('dashboard.nav.home')}</span>
         </Link>
         <Link to="/community" className="nav-item">
-          <span className="nav-icon">👥</span>
+          <span className="nav-icon">
+            <UsersIcon size={24} />
+          </span>
           <span className="nav-label">{t('dashboard.nav.community')}</span>
         </Link>
         <Link to="/premium" className="nav-item">
-          <span className="nav-icon">⭐</span>
+          <span className="nav-icon">
+            <StarIcon size={24} />
+          </span>
           <span className="nav-label">Premium</span>
         </Link>
         <Link to="/settings" className="nav-item active">
-          <span className="nav-icon">⚙️</span>
+          <span className="nav-icon">
+            <SettingsIcon size={24} />
+          </span>
           <span className="nav-label">{t('settings.title')}</span>
         </Link>
       </nav>

@@ -22,6 +22,9 @@
 .premium-header h1 {
   font-size: 28px;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .premium-main {
@@ -116,6 +119,14 @@
   padding: 10px 0;
   color: #374151;
   font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.inline-icon {
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .premium-features {
@@ -144,9 +155,11 @@
 }
 
 .feature-icon {
-  font-size: 48px;
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 16px;
+  height: 48px;
 }
 
 .feature-item h4 {
@@ -210,6 +223,10 @@
   color: #1f2937;
   font-weight: 600;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 @media (max-width: 768px) {
