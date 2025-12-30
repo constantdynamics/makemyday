@@ -5,6 +5,8 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import DashboardScreen from './screens/DashboardScreen';
+import ExploreScreen from './screens/ExploreScreen';
+import ChallengesScreen from './screens/ChallengesScreen';
 import PremiumScreen from './screens/PremiumScreen';
 import CommunityScreen from './screens/CommunityScreen';
 import SettingsScreen from './screens/SettingsScreen';
@@ -54,6 +56,8 @@ function App() {
             <Route path="/login" element={<LoginScreen />} />
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/dashboard" element={<DashboardScreen />} />
+            <Route path="/explore" element={<ExploreScreen />} />
+            <Route path="/challenges" element={<ChallengesScreen />} />
             <Route path="/premium" element={<PremiumScreen />} />
             <Route path="/community" element={<CommunityScreen />} />
             <Route path="/settings" element={<SettingsScreen />} />

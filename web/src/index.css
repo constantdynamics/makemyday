@@ -17,10 +17,15 @@
 
   /* Theme colors */
   --primary-color: #6366f1;
+  --primary: #6366f1;
   --primary-dark: #4f46e5;
   --secondary-color: #8b5cf6;
   --background: #ffffff;
+  --bg-secondary: #f3f4f6;
+  --bg-hover: #e5e7eb;
   --text: #1f2937;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
   --text-light: #6b7280;
   --border: #e5e7eb;
   --success: #10b981;

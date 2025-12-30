@@ -136,15 +136,15 @@ export default function DashboardScreen() {
         <section className="quick-actions">
           <h3>{t('dashboard.quickActions.title')}</h3>
           <div className="action-grid">
-            <div className="action-card">
+            <Link to="/explore" className="action-card">
               <SearchIcon size={48} className="action-icon" />
               <h4>{t('dashboard.quickActions.explore')}</h4>
-            </div>
+            </Link>
 
-            <div className="action-card">
+            <Link to="/challenges" className="action-card">
               <TargetIcon size={48} className="action-icon" />
               <h4>{t('dashboard.quickActions.challenges')}</h4>
-            </div>
+            </Link>
 
             <Link to="/community" className="action-card">
               <UsersIcon size={48} className="action-icon" />
@@ -164,7 +164,7 @@ export default function DashboardScreen() {
           <HomeIcon size={24} />
           <span>{t('dashboard.nav.home')}</span>
         </Link>
-        <Link to="/dashboard" className="nav-item">
+        <Link to="/explore" className="nav-item">
           <SearchIcon size={24} />
           <span>{t('dashboard.nav.explore')}</span>
         </Link>
