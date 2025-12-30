@@ -37,13 +37,15 @@ npm run preview
 
 ## 📦 Deployment
 
-### GitHub Pages
+### GitHub Pages (Automated)
 
-The app automatically deploys to GitHub Pages when pushing to main branch:
+The app automatically deploys to GitHub Pages when pushing to the configured branch:
 
-1. Push code to `main` or configured branch
-2. GitHub Actions builds the PWA
-3. Deploys to `https://[username].github.io/makemyday/`
+1. Push code to the branch (triggers GitHub Actions)
+2. GitHub Actions builds the PWA automatically
+3. Deploys to `https://constantdynamics.github.io/makemyday/`
+
+**Status**: Configured and ready ✅
 
 ### Manual Deployment
 
