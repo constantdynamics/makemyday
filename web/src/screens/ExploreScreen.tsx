@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { SearchIcon, HomeIcon, UsersIcon, SettingsIcon } from '../components/icons';
+import { SearchIcon } from '../components/icons';
 import './ExploreScreen.css';
 
 const categories = [
@@ -14,25 +14,32 @@ const categories = [
   { id: 'nature', iconEmoji: '🏞️', nlName: 'Natuur', enName: 'Nature' },
 ];
 
+const nearbyPlaces = [
+  { name: 'Rijksmuseum', distance: '1.2 km', category: 'Museum', icon: '🏛️' },
+  { name: 'Vondelpark', distance: '0.8 km', category: 'Park', icon: '🌳' },
+  { name: 'De Kas', distance: '2.5 km', category: 'Restaurant', icon: '🍽️' },
+];
+
 export default function ExploreScreen() {
   const { t, language } = useLanguage();
 
   return (
     <div className="explore-screen">
       <header className="explore-header">
-        <Link to="/dashboard" className="back-link">
+        <Link to="/dashboard" className="screen-back-link">
           ← {t('common.back')}
         </Link>
         <h1>
-          <SearchIcon size={28} color="white" className="inline-icon" />
+          <SearchIcon size={24} color="white" className="inline-icon" />
           {' '}{t('dashboard.nav.explore')}
         </h1>
       </header>
+      <div className="screen-wave screen-wave-green" />
 
       <main className="explore-main">
         <section className="search-section">
           <div className="search-box">
-            <SearchIcon size={20} color="#6b7280" />
+            <SearchIcon size={20} color="#9ca3af" />
             <input
               type="text"
               placeholder={language === 'nl' ? 'Zoek activiteiten...' : 'Search activities...'}
@@ -56,52 +63,23 @@ export default function ExploreScreen() {
         <section className="nearby-section">
           <h2>{language === 'nl' ? 'In de buurt' : 'Nearby'}</h2>
           <div className="nearby-list">
-            <div className="activity-card">
-              <div className="activity-icon">🏛️</div>
-              <div className="activity-info">
-                <h3>Rijksmuseum</h3>
-                <p className="activity-distance">1.2 km</p>
-                <p className="activity-category">{language === 'nl' ? 'Museum' : 'Museum'}</p>
+            {nearbyPlaces.map((place) => (
+              <div key={place.name} className="place-card">
+                <div className="place-icon">{place.icon}</div>
+                <div className="place-info">
+                  <h3>{place.name}</h3>
+                  <div className="place-meta">
+                    <span className="place-distance">{place.distance}</span>
+                    <span className="place-dot">·</span>
+                    <span className="place-category">{place.category}</span>
+                  </div>
+                </div>
+                <span className="place-arrow">→</span>
               </div>
-            </div>
-            <div className="activity-card">
-              <div className="activity-icon">🌳</div>
-              <div className="activity-info">
-                <h3>Vondelpark</h3>
-                <p className="activity-distance">0.8 km</p>
-                <p className="activity-category">{language === 'nl' ? 'Park' : 'Park'}</p>
-              </div>
-            </div>
-            <div className="activity-card">
-              <div className="activity-icon">🍽️</div>
-              <div className="activity-info">
-                <h3>De Kas</h3>
-                <p className="activity-distance">2.5 km</p>
-                <p className="activity-category">{language === 'nl' ? 'Restaurant' : 'Restaurant'}</p>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
       </main>
-
-      <nav className="mobile-nav">
-        <Link to="/dashboard" className="nav-item">
-          <HomeIcon size={24} />
-          <span>{t('dashboard.nav.home')}</span>
-        </Link>
-        <Link to="/explore" className="nav-item active">
-          <SearchIcon size={24} />
-          <span>{t('dashboard.nav.explore')}</span>
-        </Link>
-        <Link to="/community" className="nav-item">
-          <UsersIcon size={24} />
-          <span>{t('dashboard.nav.community')}</span>
-        </Link>
-        <Link to="/settings" className="nav-item">
-          <SettingsIcon size={24} />
-          <span>{t('settings.title')}</span>
-        </Link>
-      </nav>
     </div>
   );
 }

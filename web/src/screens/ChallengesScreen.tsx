@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { TargetIcon, TrophyIcon, CheckIcon, HomeIcon, SearchIcon, UsersIcon, SettingsIcon } from '../components/icons';
+import { TargetIcon, TrophyIcon, CheckIcon } from '../components/icons';
 import './ChallengesScreen.css';
 
 const challenges = {
@@ -18,36 +18,57 @@ const challenges = {
   ],
 };
 
+const achievements = {
+  nl: [
+    { icon: '🏆', name: 'Eerste Stappen', unlocked: true },
+    { icon: '🎯', name: 'Avonturier', unlocked: true },
+    { icon: '⭐', name: 'Ster Speler', unlocked: true },
+    { icon: '🔒', name: 'Vergrendeld', unlocked: false },
+  ],
+  en: [
+    { icon: '🏆', name: 'First Steps', unlocked: true },
+    { icon: '🎯', name: 'Adventurer', unlocked: true },
+    { icon: '⭐', name: 'Star Player', unlocked: true },
+    { icon: '🔒', name: 'Locked', unlocked: false },
+  ],
+};
+
 export default function ChallengesScreen() {
   const { t, language } = useLanguage();
   const currentChallenges = challenges[language];
+  const currentAchievements = achievements[language];
 
   return (
     <div className="challenges-screen">
       <header className="challenges-header">
-        <Link to="/dashboard" className="back-link">
+        <Link to="/dashboard" className="screen-back-link">
           ← {t('common.back')}
         </Link>
         <h1>
-          <TargetIcon size={28} color="white" className="inline-icon" />
+          <TargetIcon size={24} color="white" className="inline-icon" />
           {' '}{t('dashboard.quickActions.challenges')}
         </h1>
       </header>
+      <div className="screen-wave screen-wave-amber" />
 
       <main className="challenges-main">
         <section className="stats-overview">
-          <div className="stat-box">
-            <TrophyIcon size={32} color="#f59e0b" />
+          <div className="challenge-stat-box">
+            <div className="challenge-stat-icon-wrap amber">
+              <TrophyIcon size={24} color="#f59e0b" />
+            </div>
             <div>
-              <p className="stat-value">390</p>
-              <p className="stat-label">{language === 'nl' ? 'Punten' : 'Points'}</p>
+              <p className="challenge-stat-value">390</p>
+              <p className="challenge-stat-label">{language === 'nl' ? 'Punten' : 'Points'}</p>
             </div>
           </div>
-          <div className="stat-box">
-            <CheckIcon size={32} color="#10b981" />
+          <div className="challenge-stat-box">
+            <div className="challenge-stat-icon-wrap green">
+              <CheckIcon size={24} color="#10b981" />
+            </div>
             <div>
-              <p className="stat-value">13</p>
-              <p className="stat-label">{language === 'nl' ? 'Voltooid' : 'Completed'}</p>
+              <p className="challenge-stat-value">13</p>
+              <p className="challenge-stat-label">{language === 'nl' ? 'Voltooid' : 'Completed'}</p>
             </div>
           </div>
         </section>
@@ -55,70 +76,44 @@ export default function ChallengesScreen() {
         <section className="challenges-section">
           <h2>{language === 'nl' ? 'Actieve Uitdagingen' : 'Active Challenges'}</h2>
           <div className="challenges-list">
-            {currentChallenges.map((challenge) => (
-              <div key={challenge.id} className="challenge-card">
-                <div className="challenge-header">
-                  <h3>{challenge.title}</h3>
-                  <span className="challenge-points">+{challenge.points} {language === 'nl' ? 'pts' : 'pts'}</span>
-                </div>
-                <p className="challenge-description">{challenge.description}</p>
-                <div className="challenge-progress">
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${(challenge.progress / challenge.total) * 100}%` }}
-                    ></div>
+            {currentChallenges.map((challenge) => {
+              const percent = Math.round((challenge.progress / challenge.total) * 100);
+              return (
+                <div key={challenge.id} className="challenge-card">
+                  <div className="challenge-card-header">
+                    <h3>{challenge.title}</h3>
+                    <span className="challenge-points-badge">+{challenge.points} pts</span>
                   </div>
-                  <span className="progress-text">
-                    {challenge.progress}/{challenge.total}
-                  </span>
+                  <p className="challenge-description">{challenge.description}</p>
+                  <div className="challenge-progress">
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                    <span className="progress-text">
+                      {challenge.progress}/{challenge.total}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 
         <section className="achievements-section">
           <h2>{language === 'nl' ? 'Behaalde Prestaties' : 'Achievements'}</h2>
           <div className="achievements-grid">
-            <div className="achievement-badge">
-              <span className="badge-icon">🏆</span>
-              <p className="badge-name">{language === 'nl' ? 'Eerste Stappen' : 'First Steps'}</p>
-            </div>
-            <div className="achievement-badge">
-              <span className="badge-icon">🎯</span>
-              <p className="badge-name">{language === 'nl' ? 'Avonturier' : 'Adventurer'}</p>
-            </div>
-            <div className="achievement-badge">
-              <span className="badge-icon">⭐</span>
-              <p className="badge-name">{language === 'nl' ? 'Ster Speler' : 'Star Player'}</p>
-            </div>
-            <div className="achievement-badge locked">
-              <span className="badge-icon">🔒</span>
-              <p className="badge-name">{language === 'nl' ? 'Vergrendeld' : 'Locked'}</p>
-            </div>
+            {currentAchievements.map((achievement, i) => (
+              <div key={i} className={`achievement-badge ${!achievement.unlocked ? 'locked' : ''}`}>
+                <span className="badge-icon">{achievement.icon}</span>
+                <p className="badge-name">{achievement.name}</p>
+              </div>
+            ))}
           </div>
         </section>
       </main>
-
-      <nav className="mobile-nav">
-        <Link to="/dashboard" className="nav-item">
-          <HomeIcon size={24} />
-          <span>{t('dashboard.nav.home')}</span>
-        </Link>
-        <Link to="/explore" className="nav-item">
-          <SearchIcon size={24} />
-          <span>{t('dashboard.nav.explore')}</span>
-        </Link>
-        <Link to="/community" className="nav-item">
-          <UsersIcon size={24} />
-          <span>{t('dashboard.nav.community')}</span>
-        </Link>
-        <Link to="/settings" className="nav-item">
-          <SettingsIcon size={24} />
-          <span>{t('settings.title')}</span>
-        </Link>
-      </nav>
     </div>
   );
 }

@@ -6,9 +6,6 @@ import {
   UserIcon,
   SettingsIcon,
   InfoIcon,
-  HomeIcon,
-  UsersIcon,
-  StarIcon
 } from '../components/icons';
 import './SettingsScreen.css';
 
@@ -22,9 +19,9 @@ export default function SettingsScreen() {
   return (
     <div className="settings-screen">
       <header className="settings-header">
-        <Link to="/dashboard" className="back-button">←</Link>
+        <Link to="/dashboard" className="settings-back-btn">←</Link>
         <h1>{t('settings.title')}</h1>
-        <div className="header-spacer"></div>
+        <div className="settings-header-spacer" />
       </header>
 
       <div className="settings-content">
@@ -32,13 +29,13 @@ export default function SettingsScreen() {
 
         {/* Language Section */}
         <section className="settings-section">
-          <div className="section-header">
-            <span className="section-icon">
-              <GlobeIcon size={24} color="#6366f1" />
+          <div className="settings-section-header">
+            <span className="settings-section-icon">
+              <GlobeIcon size={22} color="#6366f1" />
             </span>
             <div>
               <h2>{t('settings.language.title')}</h2>
-              <p className="section-description">{t('settings.language.description')}</p>
+              <p className="settings-section-description">{t('settings.language.description')}</p>
             </div>
           </div>
           <div className="language-options">
@@ -46,134 +43,105 @@ export default function SettingsScreen() {
               className={`language-option ${language === 'nl' ? 'active' : ''}`}
               onClick={() => handleLanguageChange('nl')}
             >
-              <span className="flag">🇳🇱</span>
+              <span className="language-flag">🇳🇱</span>
               <span className="language-name">{t('settings.language.dutch')}</span>
-              {language === 'nl' && <span className="checkmark"><CheckIcon size={20} color="#10b981" /></span>}
+              {language === 'nl' && <span className="language-check"><CheckIcon size={18} color="#10b981" /></span>}
             </button>
             <button
               className={`language-option ${language === 'en' ? 'active' : ''}`}
               onClick={() => handleLanguageChange('en')}
             >
-              <span className="flag">🇬🇧</span>
+              <span className="language-flag">🇬🇧</span>
               <span className="language-name">{t('settings.language.english')}</span>
-              {language === 'en' && <span className="checkmark"><CheckIcon size={20} color="#10b981" /></span>}
+              {language === 'en' && <span className="language-check"><CheckIcon size={18} color="#10b981" /></span>}
             </button>
           </div>
         </section>
 
         {/* Account Section */}
         <section className="settings-section">
-          <div className="section-header">
-            <span className="section-icon">
-              <UserIcon size={24} color="#6366f1" />
+          <div className="settings-section-header">
+            <span className="settings-section-icon">
+              <UserIcon size={22} color="#6366f1" />
             </span>
             <h2>{t('settings.account.title')}</h2>
           </div>
           <div className="settings-list">
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.account.profile')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.account.email')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.account.password')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.account.privacy')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
           </div>
         </section>
 
         {/* Preferences Section */}
         <section className="settings-section">
-          <div className="section-header">
-            <span className="section-icon">
-              <SettingsIcon size={24} color="#6366f1" />
+          <div className="settings-section-header">
+            <span className="settings-section-icon">
+              <SettingsIcon size={22} color="#6366f1" />
             </span>
             <h2>{t('settings.preferences.title')}</h2>
           </div>
           <div className="settings-list">
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.preferences.notifications')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.preferences.theme')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.preferences.location')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
           </div>
         </section>
 
         {/* About Section */}
         <section className="settings-section">
-          <div className="section-header">
-            <span className="section-icon">
-              <InfoIcon size={24} color="#6366f1" />
+          <div className="settings-section-header">
+            <span className="settings-section-icon">
+              <InfoIcon size={22} color="#6366f1" />
             </span>
             <h2>{t('settings.about.title')}</h2>
           </div>
           <div className="settings-list">
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.about.version')}</span>
-              <span className="version-text">1.0.0</span>
+              <span className="settings-version">1.0.0</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.about.terms')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.about.privacy')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
-            <button className="settings-item">
+            <button className="settings-list-item">
               <span>{t('settings.about.help')}</span>
-              <span className="arrow">→</span>
+              <span className="settings-arrow">→</span>
             </button>
           </div>
         </section>
 
-        {/* Logout Button */}
-        <button className="logout-button">
+        <button className="settings-logout-btn">
           {t('settings.logout')}
         </button>
       </div>
-
-      {/* Mobile Navigation */}
-      <nav className="mobile-nav">
-        <Link to="/dashboard" className="nav-item">
-          <span className="nav-icon">
-            <HomeIcon size={24} />
-          </span>
-          <span className="nav-label">{t('dashboard.nav.home')}</span>
-        </Link>
-        <Link to="/community" className="nav-item">
-          <span className="nav-icon">
-            <UsersIcon size={24} />
-          </span>
-          <span className="nav-label">{t('dashboard.nav.community')}</span>
-        </Link>
-        <Link to="/premium" className="nav-item">
-          <span className="nav-icon">
-            <StarIcon size={24} />
-          </span>
-          <span className="nav-label">Premium</span>
-        </Link>
-        <Link to="/settings" className="nav-item active">
-          <span className="nav-icon">
-            <SettingsIcon size={24} />
-          </span>
-          <span className="nav-label">{t('settings.title')}</span>
-        </Link>
-      </nav>
     </div>
   );
 }

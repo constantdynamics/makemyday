@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { UsersIcon, HomeIcon, SearchIcon, SettingsIcon, HeartIcon, MessageIcon, ShareIcon, MapPinIcon } from '../components/icons';
+import { UsersIcon, HeartIcon, MessageIcon, ShareIcon, MapPinIcon } from '../components/icons';
 import './CommunityScreen.css';
 
 const mockPosts = [
@@ -51,21 +51,23 @@ export default function CommunityScreen() {
   return (
     <div className="community-screen">
       <header className="community-header">
-        <Link to="/dashboard" className="back-link">← {t('common.back')}</Link>
+        <Link to="/dashboard" className="screen-back-link">← {t('common.back')}</Link>
         <h1>
-          <UsersIcon size={28} color="white" className="inline-icon" />
+          <UsersIcon size={24} color="white" className="inline-icon" />
           {' '}{t('community.title')}
         </h1>
       </header>
+      <div className="screen-wave screen-wave-purple" />
 
       <main className="community-main">
-        <div className="tabs">
-          <button className="tab active">{t('community.recent')}</button>
-          <button className="tab">{t('community.trending')}</button>
-          <button className="tab">{t('community.following')}</button>
+        <div className="community-tabs">
+          <button className="community-tab active">{t('community.recent')}</button>
+          <button className="community-tab">{t('community.trending')}</button>
+          <button className="community-tab">{t('community.following')}</button>
         </div>
 
         <div className="create-post">
+          <div className="create-post-avatar">✏️</div>
           <input
             type="text"
             placeholder={t('community.writePost')}
@@ -82,8 +84,8 @@ export default function CommunityScreen() {
                   <div>
                     <div className="user-name">{post.user}</div>
                     <div className="post-activity">
-                      <MapPinIcon size={14} className="inline-icon" color="#6b7280" />
-                      {' '}{post.activity} • {post.location}
+                      <MapPinIcon size={12} color="#9ca3af" />
+                      {post.activity} · {post.location}
                     </div>
                   </div>
                 </div>
@@ -95,16 +97,16 @@ export default function CommunityScreen() {
               </div>
 
               <div className="post-actions">
-                <button className="action-btn">
-                  <HeartIcon size={18} />
+                <button className="post-action-btn">
+                  <HeartIcon size={16} />
                   <span>{post.likes}</span>
                 </button>
-                <button className="action-btn">
-                  <MessageIcon size={18} />
+                <button className="post-action-btn">
+                  <MessageIcon size={16} />
                   <span>{post.comments}</span>
                 </button>
-                <button className="action-btn">
-                  <ShareIcon size={18} />
+                <button className="post-action-btn">
+                  <ShareIcon size={16} />
                   <span>{t('community.share')}</span>
                 </button>
               </div>
@@ -112,25 +114,6 @@ export default function CommunityScreen() {
           ))}
         </div>
       </main>
-
-      <nav className="mobile-nav">
-        <Link to="/dashboard" className="nav-item">
-          <HomeIcon size={24} />
-          <span>{t('dashboard.nav.home')}</span>
-        </Link>
-        <Link to="/explore" className="nav-item">
-          <SearchIcon size={24} />
-          <span>{t('dashboard.nav.explore')}</span>
-        </Link>
-        <Link to="/community" className="nav-item active">
-          <UsersIcon size={24} />
-          <span>{t('dashboard.nav.community')}</span>
-        </Link>
-        <Link to="/settings" className="nav-item">
-          <SettingsIcon size={24} />
-          <span>{t('settings.title')}</span>
-        </Link>
-      </nav>
     </div>
   );
 }

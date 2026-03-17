@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
-import { TargetIcon, DiceIcon, SearchIcon, TrophyIcon, UsersIcon, SettingsIcon, CheckIcon, ChartIcon, FireIcon, HomeIcon } from '../components/icons';
+import { TargetIcon, DiceIcon, SearchIcon, TrophyIcon, UsersIcon, SettingsIcon, CheckIcon, ChartIcon, FireIcon } from '../components/icons';
 import './DashboardScreen.css';
 
 const activities = {
@@ -50,7 +50,6 @@ export default function DashboardScreen() {
     setSpinning(true);
     setCurrentActivity(null);
 
-    // Simulate spinning animation
     setTimeout(() => {
       const activityList = activities[language];
       const randomIndex = Math.floor(Math.random() * activityList.length);
@@ -62,26 +61,32 @@ export default function DashboardScreen() {
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <Link to="/" className="home-link">
-          <h1>
-            <TargetIcon size={32} color="white" className="inline-icon" />
-            {' '}{t('welcome.title')}
-          </h1>
-        </Link>
+        <div className="dashboard-header-inner">
+          <Link to="/" className="home-link">
+            <div className="header-logo">
+              <TargetIcon size={28} color="white" />
+            </div>
+            <h1>{t('welcome.title')}</h1>
+          </Link>
+        </div>
+        <div className="header-wave" />
       </header>
 
       <main className="dashboard-main">
         <section className="greeting-section">
-          <h2>{t('dashboard.greeting')}!</h2>
+          <h2>{t('dashboard.greeting')}! 👋</h2>
           <p>{t('dashboard.subtitle')}</p>
         </section>
 
         <section className="spin-section">
           <div className="spin-card">
+            <div className="spin-card-glow" />
             <h3>{t('dashboard.spinWheel')}</h3>
             {currentActivity && !spinning && (
               <div className="activity-result">
-                <p className="activity-label">{language === 'nl' ? 'Je volgende avontuur:' : 'Your next adventure:'}</p>
+                <p className="activity-label">
+                  {language === 'nl' ? 'Je volgende avontuur' : 'Your next adventure'}
+                </p>
                 <p className="activity-name">{currentActivity}</p>
               </div>
             )}
@@ -90,8 +95,10 @@ export default function DashboardScreen() {
               onClick={handleSpin}
               disabled={spinning}
             >
-              <DiceIcon size={28} className="spin-icon" />
-              {spinning ? (language === 'nl' ? 'Aan het draaien...' : 'Spinning...') : t('dashboard.spinButton')}
+              <DiceIcon size={24} className="spin-icon" />
+              {spinning
+                ? (language === 'nl' ? 'Aan het draaien...' : 'Spinning...')
+                : t('dashboard.spinButton')}
             </button>
           </div>
         </section>
@@ -99,36 +106,32 @@ export default function DashboardScreen() {
         <section className="stats-section">
           <div className="stats-grid">
             <div className="stat-card">
-              <div className="stat-header">
-                <CheckIcon size={20} className="stat-icon" />
-                <span className="stat-label">{t('dashboard.stats.completed')}</span>
+              <div className="stat-icon-wrap stat-icon-green">
+                <CheckIcon size={18} color="#10b981" />
               </div>
               <span className="stat-number">0</span>
-              <span className="stat-sublabel">{t('dashboard.stats.activities')}</span>
+              <span className="stat-label">{t('dashboard.stats.completed')}</span>
             </div>
             <div className="stat-card">
-              <div className="stat-header">
-                <FireIcon size={20} className="stat-icon" />
-                <span className="stat-label">{t('dashboard.stats.streak')}</span>
+              <div className="stat-icon-wrap stat-icon-orange">
+                <FireIcon size={18} color="#f59e0b" />
               </div>
               <span className="stat-number">0</span>
-              <span className="stat-sublabel">{t('dashboard.stats.days')}</span>
+              <span className="stat-label">{t('dashboard.stats.streak')}</span>
             </div>
             <div className="stat-card">
-              <div className="stat-header">
-                <ChartIcon size={20} className="stat-icon" />
-                <span className="stat-label">{t('dashboard.stats.points')}</span>
+              <div className="stat-icon-wrap stat-icon-purple">
+                <ChartIcon size={18} color="#8b5cf6" />
               </div>
               <span className="stat-number">0</span>
-              <span className="stat-sublabel">{t('dashboard.stats.earned')}</span>
+              <span className="stat-label">{t('dashboard.stats.points')}</span>
             </div>
             <div className="stat-card">
-              <div className="stat-header">
-                <TrophyIcon size={20} className="stat-icon" />
-                <span className="stat-label">{t('dashboard.stats.level')}</span>
+              <div className="stat-icon-wrap stat-icon-blue">
+                <TrophyIcon size={18} color="#6366f1" />
               </div>
               <span className="stat-number">1</span>
-              <span className="stat-sublabel">{t('dashboard.stats.adventurer')}</span>
+              <span className="stat-label">{t('dashboard.stats.level')}</span>
             </div>
           </div>
         </section>
@@ -136,47 +139,25 @@ export default function DashboardScreen() {
         <section className="quick-actions">
           <h3>{t('dashboard.quickActions.title')}</h3>
           <div className="action-grid">
-            <Link to="/explore" className="action-card">
-              <SearchIcon size={48} className="action-icon" />
+            <Link to="/explore" className="action-card action-card-green">
+              <SearchIcon size={32} color="#10b981" />
               <h4>{t('dashboard.quickActions.explore')}</h4>
             </Link>
-
-            <Link to="/challenges" className="action-card">
-              <TargetIcon size={48} className="action-icon" />
+            <Link to="/challenges" className="action-card action-card-amber">
+              <TargetIcon size={32} color="#f59e0b" />
               <h4>{t('dashboard.quickActions.challenges')}</h4>
             </Link>
-
-            <Link to="/community" className="action-card">
-              <UsersIcon size={48} className="action-icon" />
+            <Link to="/community" className="action-card action-card-purple">
+              <UsersIcon size={32} color="#8b5cf6" />
               <h4>{t('community.title')}</h4>
             </Link>
-
-            <Link to="/settings" className="action-card">
-              <SettingsIcon size={48} className="action-icon" />
+            <Link to="/settings" className="action-card action-card-slate">
+              <SettingsIcon size={32} color="#64748b" />
               <h4>{t('settings.title')}</h4>
             </Link>
           </div>
         </section>
       </main>
-
-      <nav className="mobile-nav">
-        <Link to="/dashboard" className="nav-item active">
-          <HomeIcon size={24} />
-          <span>{t('dashboard.nav.home')}</span>
-        </Link>
-        <Link to="/explore" className="nav-item">
-          <SearchIcon size={24} />
-          <span>{t('dashboard.nav.explore')}</span>
-        </Link>
-        <Link to="/community" className="nav-item">
-          <UsersIcon size={24} />
-          <span>{t('dashboard.nav.community')}</span>
-        </Link>
-        <Link to="/settings" className="nav-item">
-          <SettingsIcon size={24} />
-          <span>{t('settings.title')}</span>
-        </Link>
-      </nav>
     </div>
   );
 }
