@@ -1,0 +1,170 @@
+.dash__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--sp-5);
+}
+.dash__hello {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+.dash__name {
+  font-size: var(--fs-2xl);
+}
+.dash__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.dash__spin {
+  text-align: center;
+  margin-bottom: var(--sp-6);
+}
+.dash__hint {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  margin-bottom: var(--sp-5);
+}
+
+/* ---- Spin wheel ---- */
+.wheel {
+  position: relative;
+  width: 256px;
+  height: 256px;
+  margin: 0 auto;
+}
+.wheel--skeleton {
+  border-radius: 50%;
+  background: var(--surface-2);
+  animation: shimmer 1.3s infinite;
+  background-image: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+  background-size: 200% 100%;
+}
+.wheel__pointer {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-top: 20px solid var(--text);
+  z-index: 3;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+}
+.wheel__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 8px solid var(--bg-elevated);
+  box-shadow: var(--shadow-lg), inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+  transition: transform 4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+.wheel__seg-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -10px;
+  opacity: 0.95;
+}
+.wheel__hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: var(--bg-elevated);
+  color: var(--primary);
+  display: grid;
+  place-items: center;
+  box-shadow: var(--shadow-md), 0 0 0 4px var(--bg-elevated);
+  z-index: 2;
+  font-weight: var(--fw-bold);
+  transition: transform var(--t-fast);
+}
+.wheel__hub:hover:not(:disabled) {
+  transform: translate(-50%, -50%) scale(1.06);
+}
+.wheel__hub.is-spinning {
+  animation: spin 0.7s linear infinite;
+}
+
+/* ---- Location prompt ---- */
+.dash__loc {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.dash__loc div {
+  flex: 1;
+}
+.dash__loc strong {
+  display: block;
+  font-size: var(--fs-sm);
+}
+.dash__loc p {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.dash__nearby-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ---- Adventure sheet ---- */
+.adv {
+  text-align: center;
+}
+.adv__emoji {
+  width: 92px;
+  height: 92px;
+  border-radius: var(--r-xl);
+  display: grid;
+  place-items: center;
+  font-size: 46px;
+  margin: 0 auto var(--sp-3);
+  animation: pop-in var(--t-med) var(--ease);
+}
+.adv__title {
+  font-size: var(--fs-xl);
+  margin: var(--sp-2) 0;
+}
+.adv__desc {
+  color: var(--text-secondary);
+  margin-bottom: var(--sp-2);
+}
+.adv__meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  margin-bottom: var(--sp-2);
+}
+.adv__actions {
+  margin-top: var(--sp-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.adv__row {
+  display: flex;
+  gap: var(--sp-3);
+}
+.adv__row .btn {
+  flex: 1;
+}

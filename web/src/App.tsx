@@ -1,91 +1,57 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { LanguageProvider } from './contexts/LanguageContext';
-import WelcomeScreen from './screens/WelcomeScreen';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import DashboardScreen from './screens/DashboardScreen';
-import ExploreScreen from './screens/ExploreScreen';
-import ChallengesScreen from './screens/ChallengesScreen';
-import PremiumScreen from './screens/PremiumScreen';
-import CommunityScreen from './screens/CommunityScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import './App.css';
+import { lazy, Suspense } from 'react';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { I18nProvider } from './i18n';
+import { ThemeProvider } from './contexts/ThemeContext';
+import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
+import { AppShell } from './components/layout/AppShell';
+import { Spinner } from './components/ui/primitives';
+import WelcomeScreen from './features/welcome/WelcomeScreen';
 
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-}
+const AuthScreen = lazy(() => import('./features/auth/AuthScreen'));
+const DashboardScreen = lazy(() => import('./features/dashboard/DashboardScreen'));
+const ExploreScreen = lazy(() => import('./features/explore/ExploreScreen'));
+const ChallengesScreen = lazy(() => import('./features/challenges/ChallengesScreen'));
+const CommunityScreen = lazy(() => import('./features/community/CommunityScreen'));
+const ProfileScreen = lazy(() => import('./features/profile/ProfileScreen'));
+const SettingsScreen = lazy(() => import('./features/settings/SettingsScreen'));
+const PremiumScreen = lazy(() => import('./features/premium/PremiumScreen'));
 
-function App() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showInstallPrompt, setShowInstallPrompt] = useState(false);
-
-  useEffect(() => {
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setDeferredPrompt(e as BeforeInstallPromptEvent);
-      setShowInstallPrompt(true);
-    };
-
-    window.addEventListener('beforeinstallprompt', handler);
-
-    return () => window.removeEventListener('beforeinstallprompt', handler);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-
-    if (outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    }
-
-    setDeferredPrompt(null);
-    setShowInstallPrompt(false);
-  };
-
+function Loading() {
   return (
-    <LanguageProvider>
-      <BrowserRouter basename="/makemyday">
-        <div className="app">
-          <Routes>
-            <Route path="/" element={<WelcomeScreen />} />
-            <Route path="/login" element={<LoginScreen />} />
-            <Route path="/register" element={<RegisterScreen />} />
-            <Route path="/dashboard" element={<DashboardScreen />} />
-            <Route path="/explore" element={<ExploreScreen />} />
-            <Route path="/challenges" element={<ChallengesScreen />} />
-            <Route path="/premium" element={<PremiumScreen />} />
-            <Route path="/community" element={<CommunityScreen />} />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-
-          {showInstallPrompt && (
-            <div className="install-prompt">
-              <div>
-                <strong>Install Make My Day</strong>
-                <p style={{ fontSize: '14px', marginTop: '4px' }}>
-                  Install our app for the best experience!
-                </p>
-              </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <button onClick={() => setShowInstallPrompt(false)}>
-                  Later
-                </button>
-                <button onClick={handleInstallClick} style={{ background: 'white' }}>
-                  Install
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </BrowserRouter>
-    </LanguageProvider>
+    <div className="screen-center" style={{ minHeight: '100dvh' }}>
+      <Spinner size={34} />
+    </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <ThemeProvider>
+      <I18nProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <BrowserRouter basename="/makemyday">
+              <Suspense fallback={<Loading />}>
+                <Routes>
+                  <Route path="/" element={<WelcomeScreen />} />
+                  <Route path="/auth" element={<AuthScreen />} />
+                  <Route path="/premium" element={<PremiumScreen />} />
+                  <Route path="/settings" element={<SettingsScreen />} />
+                  <Route path="/app" element={<AppShell />}>
+                    <Route index element={<DashboardScreen />} />
+                    <Route path="explore" element={<ExploreScreen />} />
+                    <Route path="challenges" element={<ChallengesScreen />} />
+                    <Route path="community" element={<CommunityScreen />} />
+                    <Route path="profile" element={<ProfileScreen />} />
+                  </Route>
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </BrowserRouter>
+          </ToastProvider>
+        </AuthProvider>
+      </I18nProvider>
+    </ThemeProvider>
+  );
+}

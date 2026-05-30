@@ -1,21 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import 'leaflet/dist/leaflet.css';
+import './styles/tokens.css';
+import './styles/global.css';
+import './styles/app.css';
 import App from './App';
-import './index.css';
-
-// Register service worker for PWA
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/makemyday/sw.js').then(
-      (registration) => {
-        console.log('SW registered: ', registration);
-      },
-      (error) => {
-        console.log('SW registration failed: ', error);
-      }
-    );
-  });
-}
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
