@@ -10,7 +10,7 @@ import {
 } from 'react';
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { STORAGE_PREFIX } from '../lib/config';
+import { STORAGE_PREFIX, SITE_URL } from '../lib/config';
 import type { Profile } from '../types/db';
 
 const GUEST_KEY = `${STORAGE_PREFIX}guest`;
@@ -92,7 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { name } },
+      options: { data: { name }, emailRedirectTo: SITE_URL },
     });
     if (error) throw error;
     localStorage.removeItem(GUEST_KEY);
