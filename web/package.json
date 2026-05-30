@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist"
+    "deploy": "npm run build && gh-pages -d dist",
+    "gen:icons": "node scripts/gen-icons.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.4",
@@ -25,6 +26,7 @@
     "vite": "^5.0.8",
     "vite-plugin-pwa": "^0.17.4",
     "typescript": "^5.3.3",
-    "gh-pages": "^6.1.0"
+    "gh-pages": "^6.1.0",
+    "pngjs": "^7.0.0"
   }
 }
