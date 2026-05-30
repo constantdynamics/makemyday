@@ -12,6 +12,7 @@ export interface CompleteInput {
   placeName?: string | null;
   points?: number;
   note?: string | null;
+  photoUrl?: string | null;
 }
 
 /** Reads the signed-in user's completion history and records new ones. */
@@ -35,7 +36,7 @@ export function useCompletions() {
       .order('completed_at', { ascending: false })
       .limit(50);
     setItems((data ?? []) as Completion[]);
-    setCount(total ?? (data?.length ?? 0));
+    setCount(total ?? data?.length ?? 0);
     setLoading(false);
   }, [session]);
 
@@ -54,6 +55,7 @@ export function useCompletions() {
         p_place_name: input.placeName ?? null,
         p_points: input.points ?? 10,
         p_note: input.note ?? null,
+        p_photo_url: input.photoUrl ?? null,
       });
       if (error) throw error;
       const prof = data as Profile;

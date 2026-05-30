@@ -12,14 +12,7 @@ interface Props {
   label: string;
 }
 
-export function SpinWheel({
-  categories,
-  spinning,
-  onSpinStart,
-  onResult,
-  disabled,
-  label,
-}: Props) {
+export function SpinWheel({ categories, spinning, onSpinStart, onResult, disabled, label }: Props) {
   const [rotation, setRotation] = useState(0);
   const pendingIndex = useRef<number | null>(null);
   const seg = categories.length ? 360 / categories.length : 0;

@@ -112,7 +112,9 @@ export default function AuthScreen() {
         </button>
       </p>
 
-      <div className="auth__divider"><span>{t('auth.orGuest')}</span></div>
+      <div className="auth__divider">
+        <span>{t('auth.orGuest')}</span>
+      </div>
       <Button variant="ghost" block icon="compass" onClick={guest}>
         {t('welcome.guest')}
       </Button>

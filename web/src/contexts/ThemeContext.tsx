@@ -27,9 +27,7 @@ function systemDark(): boolean {
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [pref, setPrefState] = useState<ThemePref>(() => {
     const saved = localStorage.getItem(KEY);
-    return saved === 'light' || saved === 'dark' || saved === 'system'
-      ? saved
-      : 'system';
+    return saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system';
   });
   const [sysDark, setSysDark] = useState(systemDark);
 
@@ -40,8 +38,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener('change', handler);
   }, []);
 
-  const resolved: 'light' | 'dark' =
-    pref === 'system' ? (sysDark ? 'dark' : 'light') : pref;
+  const resolved: 'light' | 'dark' = pref === 'system' ? (sysDark ? 'dark' : 'light') : pref;
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', resolved);

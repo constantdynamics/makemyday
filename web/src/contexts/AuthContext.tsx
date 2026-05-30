@@ -88,21 +88,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     loadProfile(user).finally(() => setLoading(false));
   }, [session, loadProfile]);
 
-  const signUp = useCallback(
-    async (email: string, password: string, name: string) => {
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { data: { name } },
-      });
-      if (error) throw error;
-      localStorage.removeItem(GUEST_KEY);
-      setIsGuest(false);
-      // When email confirmation is on, there is no session yet.
-      return { needsConfirm: !data.session };
-    },
-    []
-  );
+  const signUp = useCallback(async (email: string, password: string, name: string) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+    if (error) throw error;
+    localStorage.removeItem(GUEST_KEY);
+    setIsGuest(false);
+    // When email confirmation is on, there is no session yet.
+    return { needsConfirm: !data.session };
+  }, []);
 
   const signIn = useCallback(async (email: string, password: string) => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -157,7 +154,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLocalProfile: setProfile,
       updateProfile,
     }),
-    [session, profile, isGuest, loading, signUp, signIn, signOut, continueAsGuest, refreshProfile, updateProfile]
+    [
+      session,
+      profile,
+      isGuest,
+      loading,
+      signUp,
+      signIn,
+      signOut,
+      continueAsGuest,
+      refreshProfile,
+      updateProfile,
+    ]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

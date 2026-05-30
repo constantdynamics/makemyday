@@ -20,7 +20,7 @@ export type Profile = {
   is_premium: boolean;
   created_at: string;
   updated_at: string;
-}
+};
 
 export type Category = {
   id: string;
@@ -30,7 +30,7 @@ export type Category = {
   color: string;
   osm_filters: string[];
   sort_order: number;
-}
+};
 
 export type Activity = {
   id: string;
@@ -43,7 +43,7 @@ export type Activity = {
   min_duration: number;
   indoor: boolean;
   tags: string[];
-}
+};
 
 export type Challenge = {
   id: string;
@@ -56,7 +56,7 @@ export type Challenge = {
   difficulty: 'easy' | 'medium' | 'hard';
   category_id: string | null;
   icon: string;
-}
+};
 
 export type Completion = {
   id: string;
@@ -71,7 +71,7 @@ export type Completion = {
   note: string | null;
   photo_url: string | null;
   completed_at: string;
-}
+};
 
 export type PostFeedRow = {
   id: string;
@@ -87,14 +87,14 @@ export type PostFeedRow = {
   like_count: number;
   comment_count: number;
   liked_by_me: boolean;
-}
+};
 
 export type UserChallenge = {
   id: string;
   user_id: string;
   challenge_id: string;
   completed_at: string;
-}
+};
 
 type Identity<T> = T;
 type Insertable<T, Optional extends keyof T> = Identity<
@@ -201,6 +201,7 @@ export interface Database {
           p_place_name?: string | null;
           p_points?: number;
           p_note?: string | null;
+          p_photo_url?: string | null;
         };
         Returns: Profile;
       };

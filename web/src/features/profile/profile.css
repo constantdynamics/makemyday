@@ -39,6 +39,13 @@
   color: var(--green-500);
   font-size: var(--fs-sm);
 }
+.history__photo {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+  flex-shrink: 0;
+}
 
 .avatar-pick {
   display: grid;

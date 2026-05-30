@@ -4,6 +4,7 @@ import { I18nProvider } from './i18n';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastProvider } from './contexts/ToastContext';
+import { SessionProvider } from './contexts/SessionContext';
 import { AppShell } from './components/layout/AppShell';
 import { Spinner } from './components/ui/primitives';
 import WelcomeScreen from './features/welcome/WelcomeScreen';
@@ -31,24 +32,26 @@ export default function App() {
       <I18nProvider>
         <AuthProvider>
           <ToastProvider>
-            <BrowserRouter basename="/makemyday">
-              <Suspense fallback={<Loading />}>
-                <Routes>
-                  <Route path="/" element={<WelcomeScreen />} />
-                  <Route path="/auth" element={<AuthScreen />} />
-                  <Route path="/premium" element={<PremiumScreen />} />
-                  <Route path="/settings" element={<SettingsScreen />} />
-                  <Route path="/app" element={<AppShell />}>
-                    <Route index element={<DashboardScreen />} />
-                    <Route path="explore" element={<ExploreScreen />} />
-                    <Route path="challenges" element={<ChallengesScreen />} />
-                    <Route path="community" element={<CommunityScreen />} />
-                    <Route path="profile" element={<ProfileScreen />} />
-                  </Route>
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Suspense>
-            </BrowserRouter>
+            <SessionProvider>
+              <BrowserRouter basename="/makemyday">
+                <Suspense fallback={<Loading />}>
+                  <Routes>
+                    <Route path="/" element={<WelcomeScreen />} />
+                    <Route path="/auth" element={<AuthScreen />} />
+                    <Route path="/premium" element={<PremiumScreen />} />
+                    <Route path="/settings" element={<SettingsScreen />} />
+                    <Route path="/app" element={<AppShell />}>
+                      <Route index element={<DashboardScreen />} />
+                      <Route path="explore" element={<ExploreScreen />} />
+                      <Route path="challenges" element={<ChallengesScreen />} />
+                      <Route path="community" element={<CommunityScreen />} />
+                      <Route path="profile" element={<ProfileScreen />} />
+                    </Route>
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Routes>
+                </Suspense>
+              </BrowserRouter>
+            </SessionProvider>
           </ToastProvider>
         </AuthProvider>
       </I18nProvider>

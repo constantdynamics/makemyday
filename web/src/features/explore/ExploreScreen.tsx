@@ -43,14 +43,21 @@ export default function ExploreScreen() {
       </header>
 
       <div className="chips">
-        <button className={`chip ${cat === 'all' ? 'is-active' : ''}`} onClick={() => setCat('all')}>
+        <button
+          className={`chip ${cat === 'all' ? 'is-active' : ''}`}
+          onClick={() => setCat('all')}
+        >
           {t('explore.all')}
         </button>
         {categories.map((c) => (
           <button
             key={c.id}
             className={`chip ${cat === c.id ? 'is-active' : ''}`}
-            style={cat === c.id ? { background: c.color, borderColor: c.color, color: '#fff' } : undefined}
+            style={
+              cat === c.id
+                ? { background: c.color, borderColor: c.color, color: '#fff' }
+                : undefined
+            }
             onClick={() => setCat(c.id)}
           >
             <Icon name={c.icon} size={15} /> {categoryName(c, lang)}
@@ -61,7 +68,11 @@ export default function ExploreScreen() {
       <div className="explore__radius">
         <span className="muted">{t('explore.radius')}</span>
         {RADII.map((r) => (
-          <button key={r} className={`pill ${radius === r ? 'is-active' : ''}`} onClick={() => setRadius(r)}>
+          <button
+            key={r}
+            className={`pill ${radius === r ? 'is-active' : ''}`}
+            onClick={() => setRadius(r)}
+          >
             {r / 1000} km
           </button>
         ))}
@@ -79,7 +90,9 @@ export default function ExploreScreen() {
           }
         />
       ) : status === 'loading' ? (
-        <div className="screen-center"><Spinner /></div>
+        <div className="screen-center">
+          <Spinner />
+        </div>
       ) : pois.length === 0 ? (
         <EmptyState icon="search" title={t('explore.noResults')} />
       ) : view === 'list' ? (
@@ -88,7 +101,13 @@ export default function ExploreScreen() {
           <div className="explore__list">
             {pois.map((p) => (
               <Card key={p.id} className="poi-row">
-                <span className="poi-row__icon" style={{ background: `${catColor(p.categoryId)}22`, color: catColor(p.categoryId) }}>
+                <span
+                  className="poi-row__icon"
+                  style={{
+                    background: `${catColor(p.categoryId)}22`,
+                    color: catColor(p.categoryId),
+                  }}
+                >
                   <Icon name={catIcon(p.categoryId)} size={18} />
                 </span>
                 <div className="poi-row__body">
@@ -100,7 +119,9 @@ export default function ExploreScreen() {
                   <button
                     className="icon-btn"
                     aria-label="navigate"
-                    onClick={() => window.open(directionsUrl({ lat: p.lat, lng: p.lng }, p.name), '_blank')}
+                    onClick={() =>
+                      window.open(directionsUrl({ lat: p.lat, lng: p.lng }, p.name), '_blank')
+                    }
                   >
                     <Icon name="navigation" size={18} />
                   </button>
@@ -114,23 +135,36 @@ export default function ExploreScreen() {
           <MapContainer center={[origin.lat, origin.lng]} zoom={14} scrollWheelZoom>
             <Recenter center={origin} />
             <TileLayer
-              attribution='&copy; OpenStreetMap'
+              attribution="&copy; OpenStreetMap"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <CircleMarker center={[origin.lat, origin.lng]} radius={9} pathOptions={{ color: '#fff', weight: 3, fillColor: '#6366f1', fillOpacity: 1 }} />
+            <CircleMarker
+              center={[origin.lat, origin.lng]}
+              radius={9}
+              pathOptions={{ color: '#fff', weight: 3, fillColor: '#6366f1', fillOpacity: 1 }}
+            />
             {pois.map((p) => (
               <CircleMarker
                 key={p.id}
                 center={[p.lat, p.lng]}
                 radius={7}
-                pathOptions={{ color: catColor(p.categoryId), fillColor: catColor(p.categoryId), fillOpacity: 0.85, weight: 2 }}
+                pathOptions={{
+                  color: catColor(p.categoryId),
+                  fillColor: catColor(p.categoryId),
+                  fillOpacity: 0.85,
+                  weight: 2,
+                }}
               >
                 <Popup>
                   <strong>{p.name}</strong>
                   <br />
                   {formatDistance(p.distance, lang)}
                   <br />
-                  <a href={directionsUrl({ lat: p.lat, lng: p.lng }, p.name)} target="_blank" rel="noreferrer">
+                  <a
+                    href={directionsUrl({ lat: p.lat, lng: p.lng }, p.name)}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
                     {t('dashboard.navigate')} →
                   </a>
                 </Popup>

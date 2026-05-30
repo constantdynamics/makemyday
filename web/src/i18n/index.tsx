@@ -56,9 +56,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
       }
       if (typeof node !== 'string') return key;
       if (!vars) return node;
-      return node.replace(/\{(\w+)\}/g, (_, k) =>
-        k in vars ? String(vars[k]) : `{${k}}`
-      );
+      return node.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? String(vars[k]) : `{${k}}`));
     },
     [lang]
   );

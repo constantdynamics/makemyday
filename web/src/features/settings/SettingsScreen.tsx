@@ -29,7 +29,9 @@ export default function SettingsScreen() {
 
       {!user && (
         <Card className="settings__premium" onClick={() => navigate('/auth?mode=register')}>
-          <span className="settings__premium-icon"><Icon name="user" size={22} /></span>
+          <span className="settings__premium-icon">
+            <Icon name="user" size={22} />
+          </span>
           <div>
             <strong>{t('auth.createAccount')}</strong>
             <p>{t('profile.guestSub')}</p>
@@ -38,8 +40,13 @@ export default function SettingsScreen() {
         </Card>
       )}
 
-      <Card className="settings__premium settings__premium--gold" onClick={() => navigate('/premium')}>
-        <span className="settings__premium-icon"><Icon name="crown" size={22} /></span>
+      <Card
+        className="settings__premium settings__premium--gold"
+        onClick={() => navigate('/premium')}
+      >
+        <span className="settings__premium-icon">
+          <Icon name="crown" size={22} />
+        </span>
         <div>
           <strong>{t('settings.premium')}</strong>
           <p>{t('premium.subtitle')}</p>
@@ -50,7 +57,9 @@ export default function SettingsScreen() {
       <section className="settings__group">
         <h2>{t('settings.appearance')}</h2>
         <Card className="settings__row settings__row--stack">
-          <span className="settings__label"><Icon name="moon" size={18} /> {t('settings.theme')}</span>
+          <span className="settings__label">
+            <Icon name="moon" size={18} /> {t('settings.theme')}
+          </span>
           <Segmented
             value={pref}
             onChange={setPref}
@@ -62,7 +71,9 @@ export default function SettingsScreen() {
           />
         </Card>
         <Card className="settings__row settings__row--stack">
-          <span className="settings__label"><Icon name="globe" size={18} /> {t('settings.language')}</span>
+          <span className="settings__label">
+            <Icon name="globe" size={18} /> {t('settings.language')}
+          </span>
           <Segmented
             value={lang}
             onChange={(l: Lang) => setLang(l)}
@@ -78,7 +89,9 @@ export default function SettingsScreen() {
         <section className="settings__group">
           <h2>{t('settings.account')}</h2>
           <Card className="settings__row">
-            <span className="settings__label"><Icon name="user" size={18} /> {user.email}</span>
+            <span className="settings__label">
+              <Icon name="user" size={18} /> {user.email}
+            </span>
           </Card>
           <Button variant="danger" block icon="logout" onClick={logout}>
             {t('settings.logout')}

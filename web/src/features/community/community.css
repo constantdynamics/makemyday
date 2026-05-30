@@ -93,7 +93,9 @@
   font-size: var(--fs-sm);
   font-weight: var(--fw-medium);
   color: var(--text-secondary);
-  transition: color var(--t-fast), transform var(--t-fast);
+  transition:
+    color var(--t-fast),
+    transform var(--t-fast);
 }
 .post__act.is-on {
   color: var(--red-500);

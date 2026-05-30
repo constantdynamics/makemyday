@@ -55,7 +55,9 @@
   width: 40px;
   height: 28px;
   border-radius: var(--r-full);
-  transition: background var(--t-fast), transform var(--t-fast);
+  transition:
+    background var(--t-fast),
+    transform var(--t-fast);
 }
 .bottom-nav__item.is-active {
   color: var(--primary);
@@ -111,7 +113,11 @@
   gap: var(--sp-2);
   font-weight: var(--fw-semibold);
   border-radius: var(--r-md);
-  transition: transform var(--t-fast), background var(--t-fast), box-shadow var(--t-fast), opacity var(--t-fast);
+  transition:
+    transform var(--t-fast),
+    background var(--t-fast),
+    box-shadow var(--t-fast),
+    opacity var(--t-fast);
   white-space: nowrap;
   user-select: none;
 }
@@ -181,7 +187,10 @@
 }
 .card--interactive {
   cursor: pointer;
-  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+  transition:
+    transform var(--t-fast),
+    box-shadow var(--t-fast),
+    border-color var(--t-fast);
 }
 .card--interactive:hover {
   transform: translateY(-2px);
@@ -241,7 +250,12 @@
 }
 .skeleton {
   display: block;
-  background: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+  background: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 37%,
+    var(--surface-2) 63%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.3s infinite;
 }
@@ -366,7 +380,9 @@
   border: 1.5px solid var(--border-strong);
   border-radius: var(--r-md);
   padding: 13px 14px;
-  transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  transition:
+    border-color var(--t-fast),
+    box-shadow var(--t-fast);
 }
 .field input:focus,
 .field textarea:focus {
@@ -622,9 +638,15 @@
   box-shadow: var(--shadow-sm);
   animation: fade-up var(--t-med) var(--ease) backwards;
 }
-.welcome__feature:nth-child(2) { animation-delay: 60ms; }
-.welcome__feature:nth-child(3) { animation-delay: 120ms; }
-.welcome__feature:nth-child(4) { animation-delay: 180ms; }
+.welcome__feature:nth-child(2) {
+  animation-delay: 60ms;
+}
+.welcome__feature:nth-child(3) {
+  animation-delay: 120ms;
+}
+.welcome__feature:nth-child(4) {
+  animation-delay: 180ms;
+}
 .welcome__feature-icon {
   width: 46px;
   height: 46px;

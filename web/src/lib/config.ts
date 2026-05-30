@@ -13,8 +13,7 @@ export const SUPABASE_URL: string =
   env.VITE_SUPABASE_URL || 'https://wmdopfocqufsquzvemka.supabase.co';
 
 export const SUPABASE_ANON_KEY: string =
-  env.VITE_SUPABASE_ANON_KEY ||
-  'sb_publishable_0vzeEC0FttISlsEiDaFCnw_N7bjjNym';
+  env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_0vzeEC0FttISlsEiDaFCnw_N7bjjNym';
 
 /** Storage key prefix so we never collide with other apps on the same origin. */
 export const STORAGE_PREFIX = 'mmd:';

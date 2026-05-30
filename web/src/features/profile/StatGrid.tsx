@@ -11,7 +11,12 @@ interface Props {
 export function StatGrid({ completed, streak, xp, level }: Props) {
   const { t } = useI18n();
   const stats = [
-    { icon: 'check-circle', value: completed, label: t('stats.completed'), color: 'var(--green-500)' },
+    {
+      icon: 'check-circle',
+      value: completed,
+      label: t('stats.completed'),
+      color: 'var(--green-500)',
+    },
     { icon: 'fire', value: streak, label: t('stats.streak'), color: 'var(--amber-500)' },
     { icon: 'bolt', value: xp, label: t('stats.xp'), color: 'var(--brand-500)' },
     { icon: 'trophy', value: level, label: t('stats.level'), color: 'var(--accent-500)' },

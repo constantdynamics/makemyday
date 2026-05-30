@@ -40,7 +40,12 @@ export default function ChallengesScreen() {
     }
   };
 
-  if (loading) return <div className="screen-center"><Spinner /></div>;
+  if (loading)
+    return (
+      <div className="screen-center">
+        <Spinner />
+      </div>
+    );
 
   return (
     <div className="challenges">
@@ -52,7 +57,9 @@ export default function ChallengesScreen() {
       <Card className="challenges__progress">
         <div className="row" style={{ justifyContent: 'space-between' }}>
           <strong>{t('challenges.progress', { done: doneCount, total: challenges.length })}</strong>
-          <Badge color="var(--brand-500)">{Math.round((doneCount / Math.max(1, challenges.length)) * 100)}%</Badge>
+          <Badge color="var(--brand-500)">
+            {Math.round((doneCount / Math.max(1, challenges.length)) * 100)}%
+          </Badge>
         </div>
         <ProgressBar value={(doneCount / Math.max(1, challenges.length)) * 100} />
       </Card>
@@ -62,7 +69,13 @@ export default function ChallengesScreen() {
           const isDone = !!completed[c.id];
           return (
             <Card key={c.id} className={`challenge ${isDone ? 'is-done' : ''}`}>
-              <span className="challenge__icon" style={{ background: `${DIFF_COLOR[c.difficulty]}1f`, color: DIFF_COLOR[c.difficulty] }}>
+              <span
+                className="challenge__icon"
+                style={{
+                  background: `${DIFF_COLOR[c.difficulty]}1f`,
+                  color: DIFF_COLOR[c.difficulty],
+                }}
+              >
                 <Icon name={isDone ? 'check-circle' : c.icon} size={22} />
               </span>
               <div className="challenge__body">
