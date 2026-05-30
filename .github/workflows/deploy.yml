@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - claude/make-this-now-011CUrm74cy59JyavAeDxtcE
+      - claude/app-redesign-refactor-YMwNl
     paths:
       - 'web/**'
       - '.github/workflows/deploy.yml'
@@ -20,6 +20,8 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Build is independent of GitHub Pages being enabled, so this check reflects
+  # only whether the code compiles + bundles. Pages config lives in `deploy`.
   build:
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +31,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: 'web/package-lock.json'
 
@@ -41,21 +43,24 @@ jobs:
         working-directory: ./web
         run: npm run build
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './web/dist'
 
   deploy:
+    needs: build
+    runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
     steps:
+      # enablement:true best-effort turns Pages on (needs the Actions source).
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

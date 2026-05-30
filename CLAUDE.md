@@ -42,14 +42,22 @@ cd backend && npx jest --testNamePattern="test name"
 
 This is an npm workspaces monorepo with four packages: `backend`, `frontend`, `web`, and `shared`.
 
-### Web PWA (`web/`)
+### Web PWA (`web/`) — actively developed (v2)
 
-The active PWA is built with **React 18 + Vite + React Router**, deployed to GitHub Pages via the `.github/workflows/deploy.yml` CI/CD pipeline.
+The active PWA is **React 18 + Vite + React Router 6 + TypeScript**, backed by **Supabase** (auth + Postgres), deployed to GitHub Pages via `.github/workflows/deploy.yml`.
 
-- **Language/i18n:** `src/contexts/LanguageContext.tsx` provides a global `useLanguage()` hook with a `t(key)` translation function. All translations (NL/EN) are co-located in this file. Language choice is persisted in `localStorage`.
-- **Routing:** Flat route structure in `src/App.tsx`. All routes are defined there: `/`, `/login`, `/register`, `/dashboard`, `/explore`, `/challenges`, `/premium`, `/community`, `/settings`.
-- **Icons:** Custom SVG icon components in `src/components/icons/`. Each icon accepts `size`, `color`, and `className` props. Export them via the index file at `src/components/icons/index.ts`.
-- **Styling:** Per-screen CSS files (e.g. `DashboardScreen.css`). CSS custom properties (`--primary`, `--text-primary`, etc.) are defined in `src/index.css`.
+Folder layout under `src/`:
+- `lib/` — framework-agnostic helpers: `supabase.ts` (typed client), `config.ts` (env + public Supabase fallback), `geo.ts` (geolocation + haversine), `overpass.ts` (live OpenStreetMap POI search), `format.ts`.
+- `types/db.ts` — hand-written Supabase schema types scoped to the `mmd_` tables. **Row types must be `type` aliases, not `interface`**, or supabase-js falls back to `never`.
+- `contexts/` — `AuthContext` (session/profile/guest mode), `ThemeContext` (light/dark/system), `ToastContext`.
+- `i18n/` — `I18nProvider` + `useI18n()` exposing `t(key, vars?)` with `{var}` interpolation; dictionaries in `strings.ts` (NL/EN), persisted in `localStorage`.
+- `hooks/` — data hooks: `useCatalog`, `useNearby`, `useCompletions`, `useChallenges`.
+- `components/ui/` — design-system primitives (`Button`, `Card`, `Sheet`, `Segmented`, `primitives.tsx`). `components/icons/Icon.tsx` is a single name-keyed SVG registry (`<Icon name="dice" />`). `components/layout/AppShell` is the auth/guest gate + bottom nav.
+- `features/<name>/` — one folder per screen with co-located `.css`.
+
+- **Backend:** Supabase project shared with other apps; every Make My Day table/function is prefixed `mmd_`. Gamification (XP/streak/level) runs server-side via the `mmd_complete_activity` / `mmd_complete_challenge` RPCs. RLS: catalog tables are world-readable; user data is owner-only.
+- **Routing:** `/`, `/auth`, `/premium`, `/settings`, plus a nested `/app` shell with `index` (dashboard), `explore`, `challenges`, `community`, `profile`. Feature screens are `React.lazy`-loaded.
+- **Styling:** design tokens in `src/styles/tokens.css` (`--brand-*`, semantic `--bg`/`--text`, dark via `[data-theme="dark"]`), base in `global.css`, shared components in `app.css`, per-feature CSS co-located.
 
 ### Backend (`backend/`)
 
