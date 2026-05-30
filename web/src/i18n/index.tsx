@@ -27,7 +27,8 @@ const I18nContext = createContext<I18nValue | null>(null);
 function detectInitial(): Lang {
   const saved = localStorage.getItem(KEY);
   if (saved === 'nl' || saved === 'en') return saved;
-  return navigator.language?.toLowerCase().startsWith('nl') ? 'nl' : 'en';
+  // Default to Dutch; users can switch to English in Settings.
+  return 'nl';
 }
 
 export function I18nProvider({ children }: { children: ReactNode }) {
