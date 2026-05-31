@@ -4,8 +4,8 @@
 import { PNG } from 'pngjs';
 import { writeFileSync } from 'node:fs';
 
-const C1 = [99, 102, 241]; // brand-500 #6366f1
-const C2 = [168, 85, 247]; // accent-500 #a855f7
+const C1 = [255, 138, 61]; // amber-glow #ff8a3d
+const C2 = [251, 46, 132]; // accent-500 #fb2e84
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const mix = (c1, c2, t) => [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)];

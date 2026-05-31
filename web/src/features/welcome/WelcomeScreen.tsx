@@ -48,7 +48,10 @@ export default function WelcomeScreen() {
       <div className="welcome__features">
         {FEATURES.map((f) => (
           <div className="welcome__feature" key={f.t}>
-            <span className="welcome__feature-icon" style={{ background: `${f.color}1f`, color: f.color }}>
+            <span
+              className="welcome__feature-icon"
+              style={{ background: `${f.color}1f`, color: f.color }}
+            >
               <Icon name={f.icon} size={22} />
             </span>
             <div>
@@ -60,7 +63,12 @@ export default function WelcomeScreen() {
       </div>
 
       <div className="welcome__cta">
-        <Button size="lg" block onClick={() => navigate('/auth?mode=register')} iconRight="chevron-right">
+        <Button
+          size="lg"
+          block
+          onClick={() => navigate('/auth?mode=register')}
+          iconRight="chevron-right"
+        >
           {t('welcome.start')}
         </Button>
         <Button size="lg" block variant="secondary" icon="compass" onClick={guest}>

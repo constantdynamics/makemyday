@@ -32,12 +32,16 @@ export default function ProfileScreen() {
   if (isGuest || !user || !profile) {
     return (
       <div className="profile">
-        <header className="screen-head"><h1>{t('profile.title')}</h1></header>
+        <header className="screen-head">
+          <h1>{t('profile.title')}</h1>
+        </header>
         <EmptyState
           icon="user"
           title={t('profile.guest')}
           body={t('profile.guestSub')}
-          action={<Button onClick={() => navigate('/auth?mode=register')}>{t('auth.signUp')}</Button>}
+          action={
+            <Button onClick={() => navigate('/auth?mode=register')}>{t('auth.signUp')}</Button>
+          }
         />
       </div>
     );
@@ -45,10 +49,13 @@ export default function ProfileScreen() {
 
   const xpInLevel = profile.xp % LEVEL_XP;
   const toNext = LEVEL_XP - xpInLevel;
-  const memberSince = new Date(profile.created_at).toLocaleDateString(lang === 'nl' ? 'nl-NL' : 'en-US', {
-    month: 'long',
-    year: 'numeric',
-  });
+  const memberSince = new Date(profile.created_at).toLocaleDateString(
+    lang === 'nl' ? 'nl-NL' : 'en-US',
+    {
+      month: 'long',
+      year: 'numeric',
+    }
+  );
 
   const save = async () => {
     setSaving(true);
@@ -79,7 +86,9 @@ export default function ProfileScreen() {
         <div className="profile__level">
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <strong>Level {profile.level}</strong>
-            <span className="muted">{t('profile.nextLevel', { n: toNext, level: profile.level + 1 })}</span>
+            <span className="muted">
+              {t('profile.nextLevel', { n: toNext, level: profile.level + 1 })}
+            </span>
           </div>
           <ProgressBar value={(xpInLevel / LEVEL_XP) * 100} />
         </div>
@@ -88,12 +97,19 @@ export default function ProfileScreen() {
         </Button>
       </Card>
 
-      <StatGrid completed={count} streak={profile.streak_count} xp={profile.xp} level={profile.level} />
+      <StatGrid
+        completed={count}
+        streak={profile.streak_count}
+        xp={profile.xp}
+        level={profile.level}
+      />
 
       <section>
         <h2 className="section-title">{t('profile.history')}</h2>
         {loading ? (
-          <div className="screen-center"><Spinner /></div>
+          <div className="screen-center">
+            <Spinner />
+          </div>
         ) : items.length === 0 ? (
           <EmptyState icon="compass" title={t('profile.noHistory')} />
         ) : (
@@ -102,14 +118,28 @@ export default function ProfileScreen() {
               const cat = categories.find((x) => x.id === c.category_id);
               return (
                 <Card key={c.id} className="history__row">
-                  <span className="history__icon" style={{ background: `${cat?.color ?? '#888'}22`, color: cat?.color }}>
-                    <Icon name={cat?.icon ?? 'check'} size={18} />
-                  </span>
+                  {c.photo_url ? (
+                    <img className="history__photo" src={c.photo_url} alt="" loading="lazy" />
+                  ) : (
+                    <span
+                      className="history__icon"
+                      style={{ background: `${cat?.color ?? '#888'}22`, color: cat?.color }}
+                    >
+                      <Icon name={cat?.icon ?? 'check'} size={18} />
+                    </span>
+                  )}
                   <div className="history__body">
                     <strong>{c.title}</strong>
                     <span className="muted">
                       {cat ? categoryName(cat, lang) : c.source} · {timeAgo(c.completed_at, lang)}
                     </span>
+                    {c.rating ? (
+                      <span className="history__stars" aria-label={`${c.rating}/5`}>
+                        {Array.from({ length: c.rating }, (_, i) => (
+                          <Icon key={i} name="star" size={12} />
+                        ))}
+                      </span>
+                    ) : null}
                   </div>
                   <span className="history__pts">+{c.points}</span>
                 </Card>
@@ -136,7 +166,9 @@ export default function ProfileScreen() {
             </button>
           ))}
         </div>
-        <Button block size="lg" loading={saving} onClick={save}>{t('common.save')}</Button>
+        <Button block size="lg" loading={saving} onClick={save}>
+          {t('common.save')}
+        </Button>
       </Sheet>
     </div>
   );

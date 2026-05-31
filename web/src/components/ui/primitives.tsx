@@ -64,7 +64,15 @@ export function Spinner({ size = 28 }: { size?: number }) {
 }
 
 /* ---- Skeleton ---- */
-export function Skeleton({ height = 16, width = '100%', radius = 8 }: { height?: number; width?: number | string; radius?: number }) {
+export function Skeleton({
+  height = 16,
+  width = '100%',
+  radius = 8,
+}: {
+  height?: number;
+  width?: number | string;
+  radius?: number;
+}) {
   return <span className="skeleton" style={{ height, width, borderRadius: radius }} />;
 }
 

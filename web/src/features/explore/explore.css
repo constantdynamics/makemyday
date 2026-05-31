@@ -16,10 +16,10 @@
 }
 .explore__map {
   height: 62dvh;
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   overflow: hidden;
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 .explore__map .leaflet-container {
   width: 100%;

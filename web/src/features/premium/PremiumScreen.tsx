@@ -40,7 +40,9 @@ export default function PremiumScreen() {
       </button>
 
       <div className="premium__hero">
-        <span className="premium__crown"><Icon name="crown" size={34} color="#fff" /></span>
+        <span className="premium__crown">
+          <Icon name="crown" size={34} color="#fff" />
+        </span>
         <h1>{t('premium.title')}</h1>
         <p>{t('premium.subtitle')}</p>
       </div>
@@ -63,16 +65,22 @@ export default function PremiumScreen() {
       <ul className="premium__features">
         {FEATURES.map((f) => (
           <li key={f}>
-            <span className="premium__check"><Icon name="check" size={16} /></span>
+            <span className="premium__check">
+              <Icon name="check" size={16} />
+            </span>
             {t(`premium.features.${f}`)}
           </li>
         ))}
       </ul>
 
       {profile?.is_premium ? (
-        <Button block size="lg" disabled icon="crown">{t('premium.current')}</Button>
+        <Button block size="lg" disabled icon="crown">
+          {t('premium.current')}
+        </Button>
       ) : (
-        <Button block size="lg" loading={busy} onClick={subscribe}>{t('premium.cta')}</Button>
+        <Button block size="lg" loading={busy} onClick={subscribe}>
+          {t('premium.cta')}
+        </Button>
       )}
       <p className="premium__guarantee muted">{t('premium.guarantee')}</p>
     </div>

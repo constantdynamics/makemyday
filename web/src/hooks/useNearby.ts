@@ -49,9 +49,7 @@ export function useNearby(categories: Category[], radius: number, categoryId: st
     setStatus('loading');
 
     const active =
-      categoryId === 'all'
-        ? categories
-        : categories.filter((c) => c.id === categoryId);
+      categoryId === 'all' ? categories : categories.filter((c) => c.id === categoryId);
     const filters = active.map((c) => ({ categoryId: c.id, osm: c.osm_filters }));
 
     fetchNearbyPois(origin, radius, filters, ctrl.signal)

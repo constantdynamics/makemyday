@@ -84,7 +84,9 @@ export default function CommunityScreen() {
         <Card className="community__guest">
           <Icon name="users" size={22} color="var(--brand-500)" />
           <p>{t('community.guestNotice')}</p>
-          <Button size="sm" onClick={() => navigate('/auth?mode=register')}>{t('auth.signUp')}</Button>
+          <Button size="sm" onClick={() => navigate('/auth?mode=register')}>
+            {t('auth.signUp')}
+          </Button>
         </Card>
       ) : (
         <Card className="composer">
@@ -99,7 +101,13 @@ export default function CommunityScreen() {
             />
             <div className="composer__foot">
               <span className="muted">{draft.length}/500</span>
-              <Button size="sm" icon="share" disabled={!draft.trim()} loading={posting} onClick={submit}>
+              <Button
+                size="sm"
+                icon="share"
+                disabled={!draft.trim()}
+                loading={posting}
+                onClick={submit}
+              >
                 {t('community.post')}
               </Button>
             </div>
@@ -108,7 +116,9 @@ export default function CommunityScreen() {
       )}
 
       {loading ? (
-        <div className="screen-center"><Spinner /></div>
+        <div className="screen-center">
+          <Spinner />
+        </div>
       ) : posts.length === 0 ? (
         <EmptyState icon="message" title={t('community.empty')} />
       ) : (
@@ -133,7 +143,10 @@ export default function CommunityScreen() {
                 </div>
               )}
               <div className="post__actions">
-                <button className={`post__act ${p.liked_by_me ? 'is-on' : ''}`} onClick={() => toggleLike(p)}>
+                <button
+                  className={`post__act ${p.liked_by_me ? 'is-on' : ''}`}
+                  onClick={() => toggleLike(p)}
+                >
                   <Icon name="heart" size={18} /> {p.like_count}
                 </button>
                 <span className="post__act">

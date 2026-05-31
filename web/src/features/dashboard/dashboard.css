@@ -7,9 +7,11 @@
 .dash__hello {
   color: var(--text-secondary);
   font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
 }
 .dash__name {
   font-size: var(--fs-2xl);
+  letter-spacing: -0.02em;
 }
 .dash__avatar {
   width: 48px;
@@ -20,7 +22,87 @@
   display: grid;
   place-items: center;
   font-size: 24px;
+  box-shadow:
+    0 0 0 3px var(--bg-elevated),
+    var(--shadow-sm);
+  transition:
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.dash__avatar:hover {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 3px var(--bg-elevated),
+    var(--shadow-md);
+}
+.dash__avatar:active {
+  transform: scale(0.94);
+}
+
+/* ---- Session bar ---- */
+.session-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  margin: var(--sp-4) 0 var(--sp-5);
+  padding: var(--sp-2) var(--sp-2) var(--sp-2) var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-full);
   box-shadow: var(--shadow-sm);
+  overflow-x: auto;
+  scrollbar-width: none;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.session-bar:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+.session-bar::-webkit-scrollbar {
+  display: none;
+}
+.session-bar__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  font-size: var(--fs-sm);
+  font-weight: var(--fw-semibold);
+  color: var(--text-secondary);
+}
+.session-bar__pill + .session-bar__pill::before {
+  content: '·';
+  margin-right: var(--sp-2);
+  color: var(--border);
+}
+.session-bar__edit {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--primary);
+}
+
+/* ---- Session setup sheet ---- */
+.session-setup__sub {
+  margin-top: calc(var(--sp-2) * -1);
+  margin-bottom: var(--sp-4);
+}
+.session-setup__times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.session-setup__apply {
+  margin-top: var(--sp-5);
 }
 
 .dash__spin {
@@ -44,60 +126,136 @@
   border-radius: 50%;
   background: var(--surface-2);
   animation: shimmer 1.3s infinite;
-  background-image: linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 37%, var(--surface-2) 63%);
+  background-image: linear-gradient(
+    90deg,
+    var(--surface-2) 25%,
+    var(--surface-3) 37%,
+    var(--surface-2) 63%
+  );
   background-size: 200% 100%;
 }
 .wheel__pointer {
   position: absolute;
-  top: -6px;
+  top: -10px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 12px solid transparent;
-  border-right: 12px solid transparent;
-  border-top: 20px solid var(--text);
-  z-index: 3;
-  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
+  border-left: 13px solid transparent;
+  border-right: 13px solid transparent;
+  border-top: 22px solid var(--bg-elevated);
+  z-index: 4;
+  filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.28));
+  transition: transform var(--t-fast) var(--ease);
+}
+/* Pointer nudges up a touch while the wheel is spinning. */
+.wheel.is-spinning .wheel__pointer {
+  transform: translateX(-50%) translateY(-3px);
 }
 .wheel__disc {
   position: absolute;
   inset: 0;
   border-radius: 50%;
   border: 8px solid var(--bg-elevated);
-  box-shadow: var(--shadow-lg), inset 0 0 0 2px rgba(255, 255, 255, 0.25);
-  transition: transform 4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow:
+    var(--shadow-lg),
+    0 0 0 3px var(--surface-3),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+  transition: transform 4.6s cubic-bezier(0.12, 0.72, 0.16, 1);
   cursor: pointer;
+  overflow: hidden;
+}
+.wheel__spokes {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
 }
 .wheel__seg-icon {
   position: absolute;
   top: 50%;
   left: 50%;
-  margin: -10px;
-  opacity: 0.95;
+  margin: -11px;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+/* Static glassy highlight so the disc looks domed, not flat. */
+.wheel__gloss {
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    circle at 50% 22%,
+    rgba(255, 255, 255, 0.32),
+    rgba(255, 255, 255, 0) 55%
+  );
 }
 .wheel__hub {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 76px;
-  height: 76px;
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  background: var(--bg-elevated);
-  color: var(--primary);
+  background: var(--gradient-brand);
+  color: #fff;
   display: grid;
   place-items: center;
-  box-shadow: var(--shadow-md), 0 0 0 4px var(--bg-elevated);
-  z-index: 2;
+  box-shadow:
+    0 8px 20px rgba(79, 70, 229, 0.45),
+    0 0 0 6px var(--bg-elevated);
+  z-index: 3;
   font-weight: var(--fw-bold);
-  transition: transform var(--t-fast);
+  transition: transform var(--t-fast) var(--ease);
+}
+/* Inviting pulse ring (idle only) to signal "tap me". */
+.wheel__hub::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--brand-400);
+  opacity: 0;
+  animation: hub-invite 2.4s ease-out infinite;
 }
 .wheel__hub:hover:not(:disabled) {
   transform: translate(-50%, -50%) scale(1.06);
 }
+.wheel__hub:active:not(:disabled) {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+/* Translate-preserving pulse — never use the global `spin` here or the hub
+   loses its centering transform and drifts off to the corner. */
 .wheel__hub.is-spinning {
-  animation: spin 0.7s linear infinite;
+  animation: hub-pulse 0.6s ease-in-out infinite;
+}
+.wheel__hub.is-spinning::after {
+  animation: none;
+  opacity: 0;
+}
+.wheel__hub.is-spinning svg {
+  animation: spin 0.6s linear infinite;
+}
+@keyframes hub-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.09);
+  }
+}
+@keyframes hub-invite {
+  0% {
+    transform: scale(0.96);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(1.35);
+    opacity: 0;
+  }
 }
 
 /* ---- Location prompt ---- */
@@ -155,6 +313,53 @@
   font-size: var(--fs-sm);
   margin-bottom: var(--sp-2);
 }
+/* ---- Adventure photo ---- */
+.adv__add-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+  margin-top: var(--sp-4);
+  padding: var(--sp-4);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+  color: var(--primary);
+}
+.adv__add-photo span {
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+.adv__add-photo small {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+.adv__photo {
+  position: relative;
+  margin-top: var(--sp-4);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.adv__photo img {
+  display: block;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+}
+.adv__photo-x {
+  position: absolute;
+  top: var(--sp-2);
+  right: var(--sp-2);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  display: grid;
+  place-items: center;
+}
+
 .adv__actions {
   margin-top: var(--sp-5);
   display: flex;
@@ -167,4 +372,54 @@
 }
 .adv__row .btn {
   flex: 1;
+}
+.adv__chicken-note {
+  margin-top: var(--sp-2);
+  text-align: center;
+  font-size: var(--fs-xs);
+}
+
+/* ---- Open / closed badge ---- */
+.adv__meta.is-open {
+  color: var(--success, #16a34a);
+}
+.adv__meta.is-closed {
+  color: var(--danger, #dc2626);
+}
+
+/* ---- Star rating ---- */
+.adv__rating {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-4);
+}
+.adv__star {
+  color: var(--border);
+  padding: 2px;
+  transition: transform var(--t-fast) var(--ease);
+}
+.adv__star.is-on {
+  color: #f5b301;
+}
+.adv__star:active {
+  transform: scale(0.85);
+}
+.adv__rating-hint {
+  text-align: center;
+  font-size: var(--fs-xs);
+  margin-top: 2px;
+}
+
+/* ---- Weather chip ---- */
+.weather-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: calc(-1 * var(--sp-2)) 0 var(--sp-2);
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
 }

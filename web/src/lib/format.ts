@@ -16,9 +16,7 @@ export function timeAgo(iso: string, lang: Lang): string {
     if (secs < limit) {
       const div = i === 0 ? 1 : units[i - 1][0];
       const value = Math.floor(secs / div);
-      return lang === 'nl'
-        ? `${value} ${nlUnit(i, value)} geleden`
-        : `${value}${enUnit(i)} ago`;
+      return lang === 'nl' ? `${value} ${nlUnit(i, value)} geleden` : `${value}${enUnit(i)} ago`;
     }
   }
   const months = Math.floor(secs / 2592000);
