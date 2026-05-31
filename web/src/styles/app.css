@@ -158,8 +158,8 @@
   background: var(--gradient-brand);
   color: #fff;
   box-shadow:
-    0 6px 18px color-mix(in srgb, var(--brand-500) 38%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+    var(--shadow-brand),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 .btn--primary:hover:not(:disabled) {
   box-shadow:

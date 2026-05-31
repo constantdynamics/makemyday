@@ -13,8 +13,8 @@ export default defineConfig({
         name: 'Make My Day',
         short_name: 'MakeMyDay',
         description: 'Your personal adventure companion - discover unique activities near you',
-        theme_color: '#6366f1',
-        background_color: '#ffffff',
+        theme_color: '#f4502e',
+        background_color: '#fbf6f1',
         display: 'standalone',
         orientation: 'portrait',
         scope: '/makemyday/',
@@ -24,15 +24,15 @@ export default defineConfig({
             src: '/makemyday/icon-192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any maskable'
+            purpose: 'any maskable',
           },
           {
             src: '/makemyday/icon-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
-          }
-        ]
+            purpose: 'any maskable',
+          },
+        ],
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
@@ -44,18 +44,18 @@ export default defineConfig({
               cacheName: 'api-cache',
               expiration: {
                 maxEntries: 100,
-                maxAgeSeconds: 60 * 60 * 24 // 24 hours
+                maxAgeSeconds: 60 * 60 * 24, // 24 hours
               },
               cacheableResponse: {
-                statuses: [0, 200]
-              }
-            }
-          }
-        ]
-      }
-    })
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
+    }),
   ],
   server: {
-    port: 3001
-  }
+    port: 3001,
+  },
 });

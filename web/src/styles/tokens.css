@@ -5,21 +5,24 @@
    ========================================================================== */
 
 :root {
-  /* ---- Brand palette ---- */
-  --brand-50: #eef2ff;
-  --brand-100: #e0e7ff;
-  --brand-200: #c7d2fe;
-  --brand-300: #a5b4fc;
-  --brand-400: #818cf8;
-  --brand-500: #6366f1;
-  --brand-600: #4f46e5;
-  --brand-700: #4338ca;
-  --accent-400: #c084fc;
-  --accent-500: #a855f7;
-  --accent-600: #9333ea;
+  /* ---- Brand palette — warm "ember" coral (our signature, not default indigo) ---- */
+  --brand-50: #fff2ed;
+  --brand-100: #ffe0d4;
+  --brand-200: #ffc2ad;
+  --brand-300: #ff9d7e;
+  --brand-400: #fb7553;
+  --brand-500: #f4502e;
+  --brand-600: #db3a1b;
+  --brand-700: #b12c13;
+  /* Magenta accent + golden amber make the sunset gradient sing */
+  --accent-400: #ff5fa2;
+  --accent-500: #fb2e84;
+  --accent-600: #e0166f;
+  --amber-400: #ffc04a;
+  --amber-glow: #ff8a3d;
 
   /* ---- Functional ---- */
-  --green-500: #22c55e;
+  --green-500: #1faa6e;
   --amber-500: #f59e0b;
   --red-500: #ef4444;
   --sky-500: #0ea5e9;
@@ -29,6 +32,7 @@
   --font-sans:
     'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
     sans-serif;
+  --font-display: 'Space Grotesk', var(--font-sans);
   --fs-xs: 0.75rem;
   --fs-sm: 0.875rem;
   --fs-md: 1rem;
@@ -70,51 +74,58 @@
   --app-max: 480px;
   --nav-h: 64px;
 
-  /* ---- Semantic (light) ---- */
-  --bg: #f6f7fb;
+  /* ---- Semantic (light) — warm paper neutrals ---- */
+  --bg: #fbf6f1;
   --bg-elevated: #ffffff;
   --surface: #ffffff;
-  --surface-2: #f1f3f9;
-  --surface-3: #e8ebf3;
-  --border: #e6e8f0;
-  --border-strong: #d4d8e3;
-  --text: #14161f;
-  --text-secondary: #5b6072;
-  --text-tertiary: #898ea3;
+  --surface-2: #f5ede5;
+  --surface-3: #ece1d7;
+  --border: #ece0d6;
+  --border-strong: #dccabb;
+  --text: #1d1714;
+  --text-secondary: #6e6058;
+  --text-tertiary: #9c8d82;
   --on-brand: #ffffff;
   --primary: var(--brand-500);
   --primary-strong: var(--brand-600);
-  --ring: rgba(99, 102, 241, 0.35);
+  --ring: rgba(244, 80, 46, 0.32);
 
   --shadow-xs: 0 1px 2px rgba(16, 18, 40, 0.05);
   --shadow-sm: 0 1px 2px rgba(16, 18, 40, 0.05), 0 2px 6px rgba(16, 18, 40, 0.045);
   --shadow-md: 0 4px 10px rgba(16, 18, 40, 0.05), 0 12px 28px rgba(16, 18, 40, 0.08);
   --shadow-lg: 0 12px 26px rgba(16, 18, 40, 0.1), 0 30px 60px rgba(16, 18, 40, 0.14);
   --shadow-nav: 0 4px 12px rgba(16, 18, 40, 0.08), 0 14px 36px rgba(16, 18, 40, 0.12);
-  --gradient-brand: linear-gradient(135deg, var(--brand-500), var(--accent-500));
-  --gradient-hero: radial-gradient(120% 120% at 50% 0%, #6366f1 0%, #4f46e5 45%, #3b2db5 100%);
+  --gradient-brand: linear-gradient(
+    135deg,
+    var(--amber-glow) 0%,
+    var(--brand-500) 48%,
+    var(--accent-500) 100%
+  );
+  --gradient-hero: radial-gradient(125% 125% at 50% 0%, #ffa64d 0%, #f4502e 46%, #b12c13 100%);
+  --shadow-brand: 0 10px 30px color-mix(in srgb, var(--brand-500) 34%, transparent);
 }
 
 [data-theme='dark'] {
-  --bg: #0c0e16;
-  --bg-elevated: #14161f;
-  --surface: #171a25;
-  --surface-2: #1d212e;
-  --surface-3: #262b3a;
-  --border: #262a38;
-  --border-strong: #343a4d;
-  --text: #f3f4fa;
-  --text-secondary: #a8adc2;
-  --text-tertiary: #7a8099;
+  --bg: #14100d;
+  --bg-elevated: #1f1813;
+  --surface: #241b16;
+  --surface-2: #2c221b;
+  --surface-3: #382c23;
+  --border: #322620;
+  --border-strong: #46362c;
+  --text: #f8f1ea;
+  --text-secondary: #c6b6a9;
+  --text-tertiary: #8f8074;
   --on-brand: #ffffff;
   --primary: var(--brand-400);
   --primary-strong: var(--brand-300);
-  --ring: rgba(129, 140, 248, 0.4);
+  --ring: rgba(251, 117, 83, 0.42);
 
   --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.4), 0 14px 32px rgba(0, 0, 0, 0.45);
   --shadow-lg: 0 18px 40px rgba(0, 0, 0, 0.55), 0 30px 64px rgba(0, 0, 0, 0.6);
   --shadow-nav: 0 6px 18px rgba(0, 0, 0, 0.5), 0 16px 40px rgba(0, 0, 0, 0.55);
-  --gradient-hero: radial-gradient(120% 120% at 50% 0%, #4f46e5 0%, #312a86 50%, #15172b 100%);
+  --shadow-brand: 0 12px 34px color-mix(in srgb, var(--brand-500) 40%, transparent);
+  --gradient-hero: radial-gradient(125% 125% at 50% 0%, #f4502e 0%, #8f2b16 52%, #1a110c 100%);
 }

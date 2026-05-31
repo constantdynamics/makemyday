@@ -25,7 +25,7 @@ export default function ExploreScreen() {
   const [radius, setRadius] = useState(2500);
   const { origin, pois, status, requestLocation } = useNearby(categories, radius, cat);
 
-  const catColor = (id: string) => categories.find((c) => c.id === id)?.color ?? '#6366f1';
+  const catColor = (id: string) => categories.find((c) => c.id === id)?.color ?? '#f4502e';
   const catIcon = (id: string) => categories.find((c) => c.id === id)?.icon ?? 'map-pin';
 
   return (
@@ -141,7 +141,7 @@ export default function ExploreScreen() {
             <CircleMarker
               center={[origin.lat, origin.lng]}
               radius={9}
-              pathOptions={{ color: '#fff', weight: 3, fillColor: '#6366f1', fillOpacity: 1 }}
+              pathOptions={{ color: '#fff', weight: 3, fillColor: '#f4502e', fillOpacity: 1 }}
             />
             {pois.map((p) => (
               <CircleMarker
