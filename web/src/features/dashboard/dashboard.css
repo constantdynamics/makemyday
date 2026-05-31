@@ -7,9 +7,11 @@
 .dash__hello {
   color: var(--text-secondary);
   font-size: var(--fs-sm);
+  font-weight: var(--fw-medium);
 }
 .dash__name {
   font-size: var(--fs-2xl);
+  letter-spacing: -0.02em;
 }
 .dash__avatar {
   width: 48px;
@@ -20,7 +22,21 @@
   display: grid;
   place-items: center;
   font-size: 24px;
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    0 0 0 3px var(--bg-elevated),
+    var(--shadow-sm);
+  transition:
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.dash__avatar:hover {
+  transform: scale(1.06);
+  box-shadow:
+    0 0 0 3px var(--bg-elevated),
+    var(--shadow-md);
+}
+.dash__avatar:active {
+  transform: scale(0.94);
 }
 
 /* ---- Session bar ---- */
@@ -37,6 +53,13 @@
   box-shadow: var(--shadow-sm);
   overflow-x: auto;
   scrollbar-width: none;
+  transition:
+    border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.session-bar:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
 }
 .session-bar::-webkit-scrollbar {
   display: none;

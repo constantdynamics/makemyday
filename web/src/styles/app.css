@@ -595,6 +595,28 @@
   flex-direction: column;
   padding: var(--sp-8) var(--sp-5) var(--sp-6);
   position: relative;
+  overflow: hidden;
+}
+/* Soft ambient brand glow behind the hero. */
+.welcome::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 420px;
+  height: 420px;
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--brand-500) 22%, transparent),
+    transparent 68%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.welcome > * {
+  position: relative;
+  z-index: 1;
 }
 .welcome__lang {
   position: absolute;
