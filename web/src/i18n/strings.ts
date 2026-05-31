@@ -94,6 +94,20 @@ export const nl = {
     hint: 'Optioneel — leg je avontuur vast',
     remove: 'Verwijderen',
   },
+  rating: {
+    label: 'Geef een beoordeling',
+    hint: 'Hoe was het? (optioneel)',
+  },
+  chicken: {
+    action: 'Afhaken ({n})',
+    note: 'Afhaken kan beperkt en verbreekt je streak.',
+    done: 'Afgehaakt — je streak is verbroken.',
+    noneLeft: 'Geen afhaak-beurten meer deze sessie. Premium geeft er meer.',
+    noneLeftShort: 'Geen beurten meer',
+  },
+  weather: {
+    indoorTip: 'binnen-tips',
+  },
   stats: {
     completed: 'Voltooid',
     streak: 'Streak',
@@ -283,6 +297,20 @@ export const en: DeepStrings = {
     uploading: 'Uploading photo…',
     hint: 'Optional — capture your adventure',
     remove: 'Remove',
+  },
+  rating: {
+    label: 'Rate it',
+    hint: 'How was it? (optional)',
+  },
+  chicken: {
+    action: 'Chicken out ({n})',
+    note: 'Chickening out is limited and breaks your streak.',
+    done: 'Chickened out — your streak was reset.',
+    noneLeft: 'No chicken-outs left this session. Premium gives you more.',
+    noneLeftShort: 'No passes left',
+  },
+  weather: {
+    indoorTip: 'indoor picks',
   },
   stats: {
     completed: 'Completed',

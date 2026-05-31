@@ -283,3 +283,53 @@
 .adv__row .btn {
   flex: 1;
 }
+.adv__chicken-note {
+  margin-top: var(--sp-2);
+  text-align: center;
+  font-size: var(--fs-xs);
+}
+
+/* ---- Open / closed badge ---- */
+.adv__meta.is-open {
+  color: var(--success, #16a34a);
+}
+.adv__meta.is-closed {
+  color: var(--danger, #dc2626);
+}
+
+/* ---- Star rating ---- */
+.adv__rating {
+  display: flex;
+  justify-content: center;
+  gap: var(--sp-1);
+  margin-top: var(--sp-4);
+}
+.adv__star {
+  color: var(--border);
+  padding: 2px;
+  transition: transform var(--t-fast) var(--ease);
+}
+.adv__star.is-on {
+  color: #f5b301;
+}
+.adv__star:active {
+  transform: scale(0.85);
+}
+.adv__rating-hint {
+  text-align: center;
+  font-size: var(--fs-xs);
+  margin-top: 2px;
+}
+
+/* ---- Weather chip ---- */
+.weather-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: calc(-1 * var(--sp-2)) 0 var(--sp-2);
+  padding: 4px 10px;
+  border-radius: var(--r-full);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}

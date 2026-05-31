@@ -12,13 +12,17 @@ import {
 } from '../../hooks/useCatalog';
 import { useNearby } from '../../hooks/useNearby';
 import { useCompletions } from '../../hooks/useCompletions';
+import { useWeather } from '../../hooks/useWeather';
 import { uploadAdventurePhoto } from '../../lib/uploadPhoto';
+import { weatherSummary } from '../../lib/weather';
+import { isOpenNow, openLabel } from '../../lib/openingHours';
 import {
   TRANSPORT_RADIUS,
   TRANSPORT_ICON,
   TIME_PRESETS,
   GROUP_ICON,
   sessionFiltered,
+  skipLimit,
   formatMinutes,
   type Transport,
   type GroupSize,
@@ -42,6 +46,9 @@ interface Adventure {
   placeName?: string;
   distance?: number;
   emoji: string;
+  /** true=open, false=closed, null/undefined=unknown. */
+  openState?: boolean | null;
+  openingHours?: string;
 }
 
 export default function DashboardScreen() {
@@ -49,19 +56,24 @@ export default function DashboardScreen() {
   const { profile, isGuest } = useAuth();
   const { show } = useToast();
   const navigate = useNavigate();
-  const { config, update } = useSession();
+  const { config, update, skipsUsed, recordSkip, resetSkips } = useSession();
   const { categories, activities, loading } = useCatalog();
-  const { count, complete } = useCompletions();
+  const { count, complete, chickenOut } = useCompletions();
   const { origin, pois, status, requestLocation } = useNearby(
     categories,
     TRANSPORT_RADIUS[config.transport],
     'all'
   );
+  const weather = useWeather(origin);
 
   const [spinning, setSpinning] = useState(false);
   const [adventure, setAdventure] = useState<Adventure | null>(null);
+  const [rating, setRating] = useState(0);
   const [completing, setCompleting] = useState(false);
+  const [chickening, setChickening] = useState(false);
   const [setupOpen, setSetupOpen] = useState(false);
+
+  const skipsLeft = Math.max(0, skipLimit(profile?.is_premium) - skipsUsed);
 
   // Optional verification photo for the adventure being completed.
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -89,7 +101,11 @@ export default function DashboardScreen() {
   const buildAdventure = (cat: Category): Adventure => {
     const localPois = pois.filter((p) => p.categoryId === cat.id);
     if (origin && localPois.length) {
-      const poi = localPois[Math.floor(Math.random() * Math.min(localPois.length, 8))];
+      // Prefer places that aren't explicitly closed right now; fall back to the
+      // full list if opening hours rule everything out.
+      const openish = localPois.filter((p) => isOpenNow(p.tags.opening_hours) !== false);
+      const pickFrom = openish.length ? openish : localPois;
+      const poi = pickFrom[Math.floor(Math.random() * Math.min(pickFrom.length, 8))];
       const verb = lang === 'nl' ? 'Bezoek' : 'Visit';
       return {
         title: `${verb} ${poi.name}`,
@@ -100,13 +116,20 @@ export default function DashboardScreen() {
         placeName: poi.name,
         distance: poi.distance,
         emoji: '📍',
+        openState: isOpenNow(poi.tags.opening_hours),
+        openingHours: poi.tags.opening_hours,
       };
     }
     const inCat = sessionFiltered(
       activities.filter((a) => a.category_id === cat.id),
       config
     );
-    const pool = inCat.length ? inCat : sessionFiltered(activities, config);
+    let pool = inCat.length ? inCat : sessionFiltered(activities, config);
+    // When it's wet or cold, steer toward indoor activities if we can.
+    if (weather?.preferIndoor) {
+      const indoor = pool.filter((a) => a.indoor);
+      if (indoor.length) pool = indoor;
+    }
     const a = pool[Math.floor(Math.random() * pool.length)];
     return {
       title: activityTitle(a, lang),
@@ -120,12 +143,14 @@ export default function DashboardScreen() {
   const onResult = (cat: Category) => {
     setSpinning(false);
     setPhotoFile(null);
+    setRating(0);
     setAdventure(buildAdventure(cat));
   };
 
   const closeAdventure = () => {
     setAdventure(null);
     setPhotoFile(null);
+    setRating(0);
   };
 
   const accept = async () => {
@@ -150,6 +175,7 @@ export default function DashboardScreen() {
         placeName: adventure.placeName ?? null,
         points: 10 + adventure.category.sort_order,
         photoUrl,
+        rating: rating || null,
       });
       show(t('toast.completed', { n: prof.xp - (profile?.xp ?? 0) }), 'success');
       closeAdventure();
@@ -157,6 +183,26 @@ export default function DashboardScreen() {
       show(t('common.error'), 'error');
     } finally {
       setCompleting(false);
+    }
+  };
+
+  // Chicken out: a limited, streak-breaking way to back out of a dare.
+  const chicken = async () => {
+    if (!adventure) return;
+    if (skipsLeft <= 0) {
+      show(t('chicken.noneLeft'), 'info');
+      return;
+    }
+    setChickening(true);
+    try {
+      if (!isGuest) await chickenOut();
+      recordSkip();
+      show(t('chicken.done'), 'info');
+      closeAdventure();
+    } catch {
+      show(t('common.error'), 'error');
+    } finally {
+      setChickening(false);
     }
   };
 
@@ -204,6 +250,14 @@ export default function DashboardScreen() {
           <Icon name="sliders" size={18} />
         </span>
       </button>
+
+      {weather && (
+        <div className="weather-chip">
+          <Icon name={weatherSummary(weather, lang).icon} size={15} />
+          <span>{weatherSummary(weather, lang).label}</span>
+          {weather.preferIndoor && <span className="muted">· {t('weather.indoorTip')}</span>}
+        </div>
+      )}
 
       <section className="dash__spin">
         <h2 className="section-title">{t('dashboard.spinTitle')}</h2>
@@ -312,7 +366,10 @@ export default function DashboardScreen() {
           block
           size="lg"
           className="session-setup__apply"
-          onClick={() => setSetupOpen(false)}
+          onClick={() => {
+            resetSkips();
+            setSetupOpen(false);
+          }}
         >
           {t('session.apply')}
         </Button>
@@ -332,6 +389,27 @@ export default function DashboardScreen() {
                 <Icon name="map-pin" size={15} /> {formatDistance(adventure.distance, lang)}
               </p>
             )}
+            {adventure.openState != null && (
+              <p className={`adv__meta ${adventure.openState ? 'is-open' : 'is-closed'}`}>
+                <Icon name="clock" size={15} /> {openLabel(adventure.openState, lang)}
+                {adventure.openingHours ? ` · ${adventure.openingHours}` : ''}
+              </p>
+            )}
+
+            <div className="adv__rating" role="radiogroup" aria-label={t('rating.label')}>
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  type="button"
+                  key={n}
+                  className={`adv__star ${n <= rating ? 'is-on' : ''}`}
+                  onClick={() => setRating(n === rating ? 0 : n)}
+                  aria-label={`${n}`}
+                >
+                  <Icon name="star" size={26} />
+                </button>
+              ))}
+            </div>
+            <p className="adv__rating-hint muted">{t('rating.hint')}</p>
 
             <input
               ref={fileInput}
@@ -365,8 +443,16 @@ export default function DashboardScreen() {
                 {completing && photoFile ? t('photo.uploading') : t('dashboard.accept')}
               </Button>
               <div className="adv__row">
-                <Button variant="secondary" icon="refresh" onClick={closeAdventure}>
-                  {t('dashboard.again')}
+                <Button
+                  variant="secondary"
+                  icon="x"
+                  loading={chickening}
+                  disabled={skipsLeft <= 0}
+                  onClick={chicken}
+                >
+                  {skipsLeft > 0
+                    ? t('chicken.action', { n: skipsLeft })
+                    : t('chicken.noneLeftShort')}
                 </Button>
                 {adventure.coords && (
                   <Button
@@ -380,6 +466,7 @@ export default function DashboardScreen() {
                   </Button>
                 )}
               </div>
+              <p className="adv__chicken-note muted">{t('chicken.note')}</p>
             </div>
           </div>
         )}

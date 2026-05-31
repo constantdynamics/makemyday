@@ -70,6 +70,7 @@ export type Completion = {
   points: number;
   note: string | null;
   photo_url: string | null;
+  rating: number | null;
   completed_at: string;
 };
 
@@ -202,6 +203,7 @@ export interface Database {
           p_points?: number;
           p_note?: string | null;
           p_photo_url?: string | null;
+          p_rating?: number | null;
         };
         Returns: Profile;
       };
@@ -209,6 +211,7 @@ export interface Database {
         Args: { p_challenge_id: string };
         Returns: Profile;
       };
+      mmd_chicken_out: { Args: Record<string, never>; Returns: Profile };
       mmd_ensure_profile: { Args: Record<string, never>; Returns: Profile };
     };
   };

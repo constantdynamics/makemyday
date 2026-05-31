@@ -39,6 +39,12 @@
   color: var(--green-500);
   font-size: var(--fs-sm);
 }
+.history__stars {
+  display: inline-flex;
+  gap: 1px;
+  margin-top: 3px;
+  color: #f5b301;
+}
 .history__photo {
   width: 42px;
   height: 42px;

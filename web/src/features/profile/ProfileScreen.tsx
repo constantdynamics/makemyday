@@ -133,6 +133,13 @@ export default function ProfileScreen() {
                     <span className="muted">
                       {cat ? categoryName(cat, lang) : c.source} · {timeAgo(c.completed_at, lang)}
                     </span>
+                    {c.rating ? (
+                      <span className="history__stars" aria-label={`${c.rating}/5`}>
+                        {Array.from({ length: c.rating }, (_, i) => (
+                          <Icon key={i} name="star" size={12} />
+                        ))}
+                      </span>
+                    ) : null}
                   </div>
                   <span className="history__pts">+{c.points}</span>
                 </Card>

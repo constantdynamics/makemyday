@@ -13,6 +13,7 @@ export interface CompleteInput {
   points?: number;
   note?: string | null;
   photoUrl?: string | null;
+  rating?: number | null;
 }
 
 /** Reads the signed-in user's completion history and records new ones. */
@@ -56,6 +57,7 @@ export function useCompletions() {
         p_points: input.points ?? 10,
         p_note: input.note ?? null,
         p_photo_url: input.photoUrl ?? null,
+        p_rating: input.rating ?? null,
       });
       if (error) throw error;
       const prof = data as Profile;
@@ -66,5 +68,14 @@ export function useCompletions() {
     [refresh, setLocalProfile]
   );
 
-  return { items, count, loading, refresh, complete };
+  /** Back out of a dare — records the consequence (a broken streak) server-side. */
+  const chickenOut = useCallback(async (): Promise<Profile> => {
+    const { data, error } = await supabase.rpc('mmd_chicken_out');
+    if (error) throw error;
+    const prof = data as Profile;
+    setLocalProfile(prof);
+    return prof;
+  }, [setLocalProfile]);
+
+  return { items, count, loading, refresh, complete, chickenOut };
 }

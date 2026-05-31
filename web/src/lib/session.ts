@@ -44,6 +44,16 @@ export const DEFAULT_SESSION: SessionConfig = {
   group: 'solo',
 };
 
+/**
+ * How many times you may chicken out of a dare per session before the wheel
+ * stops letting you off the hook. Premium members get a longer leash.
+ */
+export const SKIP_LIMIT = { free: 1, premium: 5 } as const;
+
+export function skipLimit(isPremium: boolean | null | undefined): number {
+  return isPremium ? SKIP_LIMIT.premium : SKIP_LIMIT.free;
+}
+
 /** Does this activity suit the chosen group size? Soft, tag-based heuristic. */
 function groupOk(tags: string[], group: GroupSize): boolean {
   const has = (t: string) => tags.includes(t);

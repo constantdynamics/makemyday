@@ -8,6 +8,10 @@ interface SessionValue {
   config: SessionConfig;
   setConfig: (next: SessionConfig) => void;
   update: (patch: Partial<SessionConfig>) => void;
+  /** Chicken-outs used in the current outing (resets when a new session starts). */
+  skipsUsed: number;
+  recordSkip: () => void;
+  resetSkips: () => void;
 }
 
 const SessionContext = createContext<SessionValue | null>(null);
@@ -24,6 +28,12 @@ function load(): SessionConfig {
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [config, setConfigState] = useState<SessionConfig>(load);
+  // Skip budget is intentionally in-memory: a fresh outing (page load or new
+  // session) hands you back your chicken-outs.
+  const [skipsUsed, setSkipsUsed] = useState(0);
+
+  const recordSkip = useCallback(() => setSkipsUsed((n) => n + 1), []);
+  const resetSkips = useCallback(() => setSkipsUsed(0), []);
 
   const persist = (next: SessionConfig) => {
     try {
@@ -48,7 +58,10 @@ export function SessionProvider({ children }: { children: ReactNode }) {
     []
   );
 
-  const value = useMemo(() => ({ config, setConfig, update }), [config, setConfig, update]);
+  const value = useMemo(
+    () => ({ config, setConfig, update, skipsUsed, recordSkip, resetSkips }),
+    [config, setConfig, update, skipsUsed, recordSkip, resetSkips]
+  );
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }
 
