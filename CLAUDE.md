@@ -47,3 +47,31 @@ Folder layout under `web/src/`:
 - When adding new routes, register them in `web/src/App.tsx` and add navigation links where appropriate (bottom nav in `components/layout/BottomNav.tsx`, dashboard cards).
 - The PWA targets mobile-first with a fixed bottom navigation bar on all `/app` screens.
 - New user-facing strings must be added to both `nl` and `en` dictionaries in `web/src/i18n/strings.ts`.
+
+## Versioning & releases (always bump on a deploy)
+
+So the user can confirm at a glance that a deploy actually shipped, **every
+change that goes live must bump the version**. Without this, the app looks
+unchanged even after a successful deploy.
+
+- **Bump `web/package.json` `version`** on each release: patch (`2.1.0 → 2.1.1`)
+  for fixes/tweaks, minor (`2.1.0 → 2.2.0`) for new features.
+- The version is **baked into the bundle at build time** via Vite `define` in
+  `web/vite.config.ts` (`__APP_VERSION__`, `__BUILD_DATE__`, `__COMMIT__`),
+  surfaced through `web/src/lib/version.ts` (`BUILD_LABEL`) and shown at the
+  bottom of the **Settings** screen as `v2.1.0 · 2026-06-12 · <commit>`. Never
+  hardcode the version in a component again.
+- **State the new version number in chat** when reporting that a change is live,
+  so it can be matched against the Settings footer.
+
+### How to verify it's live
+
+The live site is GitHub Pages, deployed by `.github/workflows/deploy.yml` on
+every push to the default branch (currently `claude/app-redesign-refactor-YMwNl`;
+`main` is also wired up). To confirm a deploy:
+
+1. Check the **Deploy PWA to GitHub Pages** Actions run for the merge commit is
+   green (`success`).
+2. Open the live app → **Settings**, and check the version/date in the footer
+   matches the release you just shipped (hard-refresh; the PWA service worker
+   auto-updates but a cached tab may need a reload).

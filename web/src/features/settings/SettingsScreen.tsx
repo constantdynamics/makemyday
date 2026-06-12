@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { Card, Segmented } from '../../components/ui/primitives';
 import { Button } from '../../components/ui/Button';
 import { Icon } from '../../components/icons/Icon';
+import { BUILD_LABEL } from '../../lib/version';
 import './settings.css';
 
 export default function SettingsScreen() {
@@ -99,7 +100,7 @@ export default function SettingsScreen() {
         </section>
       )}
 
-      <p className="settings__version">{t('settings.version')} 2.0.0</p>
+      <p className="settings__version">{BUILD_LABEL}</p>
     </div>
   );
 }
