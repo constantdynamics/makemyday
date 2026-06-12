@@ -28,7 +28,7 @@ export function Badge({
   const style = color
     ? tone === 'solid'
       ? { background: color, color: '#fff' }
-      : { background: `${color}22`, color }
+      : { background: `color-mix(in srgb, ${color} 16%, transparent)`, color }
     : undefined;
   return (
     <span className={`badge badge--${tone}`} style={style}>

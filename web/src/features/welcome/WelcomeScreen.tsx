@@ -50,7 +50,10 @@ export default function WelcomeScreen() {
           <div className="welcome__feature" key={f.t}>
             <span
               className="welcome__feature-icon"
-              style={{ background: `${f.color}1f`, color: f.color }}
+              style={{
+                background: `color-mix(in srgb, ${f.color} 14%, transparent)`,
+                color: f.color,
+              }}
             >
               <Icon name={f.icon} size={22} />
             </span>

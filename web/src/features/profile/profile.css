@@ -14,20 +14,22 @@
   margin-bottom: var(--sp-5);
   padding-top: var(--sp-6);
 }
-/* Soft branded band behind the avatar gives the profile a hero feel. */
+/* Aurora band behind the avatar gives the profile a hero feel. */
 .profile__card::before {
   content: '';
   position: absolute;
   inset: 0 0 auto 0;
-  height: 84px;
-  background: var(--gradient-hero);
-  opacity: 0.16;
+  height: 92px;
+  background: var(--gradient-brand);
+  opacity: 0.22;
+  filter: blur(2px);
   pointer-events: none;
 }
 .profile__card .avatar {
   position: relative;
+  background: var(--bg-elevated);
   box-shadow:
-    0 0 0 4px var(--bg-elevated),
+    0 0 0 3px color-mix(in srgb, var(--brand-400) 65%, transparent),
     var(--shadow-md);
 }
 .profile__card h2 {
@@ -62,7 +64,7 @@
   display: inline-flex;
   gap: 1px;
   margin-top: 3px;
-  color: #f5b301;
+  color: var(--amber-500);
 }
 .history__photo {
   width: 42px;

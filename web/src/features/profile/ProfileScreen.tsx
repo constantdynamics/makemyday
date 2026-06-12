@@ -123,7 +123,10 @@ export default function ProfileScreen() {
                   ) : (
                     <span
                       className="history__icon"
-                      style={{ background: `${cat?.color ?? '#888'}22`, color: cat?.color }}
+                      style={{
+                        background: `color-mix(in srgb, ${cat?.color ?? '#888'} 16%, transparent)`,
+                        color: cat?.color,
+                      }}
                     >
                       <Icon name={cat?.icon ?? 'check'} size={18} />
                     </span>

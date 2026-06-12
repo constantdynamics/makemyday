@@ -12,6 +12,7 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  background: #08070f;
 }
 
 body {
@@ -33,33 +34,67 @@ body {
   margin-inline: auto;
   min-height: 100dvh;
   position: relative;
-  background: var(--bg);
-  box-shadow: 0 0 80px rgba(40, 20, 10, 0.07);
   isolation: isolate;
 }
-/* Warm ambient "aurora" wash so surfaces never read as a flat default page. */
-#root::before {
+
+/* Ambient aurora: two slow-drifting gradient blobs + a static cyan wash give
+   every screen the "northern lights behind glass" depth the design is built on. */
+#root::before,
+#root::after {
   content: '';
   position: fixed;
-  inset: 0;
   z-index: -1;
   pointer-events: none;
-  background:
-    radial-gradient(
-      60% 38% at 50% -6%,
-      color-mix(in srgb, var(--amber-glow) 26%, transparent),
-      transparent 70%
-    ),
-    radial-gradient(
-      48% 30% at 100% 8%,
-      color-mix(in srgb, var(--accent-500) 18%, transparent),
-      transparent 72%
-    ),
-    radial-gradient(
-      55% 34% at 0% 14%,
-      color-mix(in srgb, var(--brand-500) 14%, transparent),
-      transparent 72%
-    );
+  border-radius: 50%;
+  filter: blur(70px);
+}
+#root::before {
+  width: 480px;
+  height: 480px;
+  top: -180px;
+  left: calc(50% - 340px);
+  background: radial-gradient(
+    circle at 40% 40%,
+    color-mix(in srgb, var(--brand-500) 38%, transparent),
+    color-mix(in srgb, var(--accent-500) 20%, transparent) 55%,
+    transparent 75%
+  );
+  animation: aurora-a 26s ease-in-out infinite alternate;
+}
+#root::after {
+  width: 420px;
+  height: 420px;
+  bottom: -200px;
+  right: calc(50% - 330px);
+  background: radial-gradient(
+    circle at 60% 60%,
+    color-mix(in srgb, var(--cyan-400) 20%, transparent),
+    color-mix(in srgb, var(--brand-600) 18%, transparent) 55%,
+    transparent 78%
+  );
+  animation: aurora-b 32s ease-in-out infinite alternate;
+}
+[data-theme='light'] #root::before {
+  opacity: 0.55;
+}
+[data-theme='light'] #root::after {
+  opacity: 0.45;
+}
+@keyframes aurora-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(120px, 70px) scale(1.18);
+  }
+}
+@keyframes aurora-b {
+  from {
+    transform: translate(0, 0) scale(1.1);
+  }
+  to {
+    transform: translate(-110px, -90px) scale(0.95);
+  }
 }
 
 a {
@@ -109,8 +144,8 @@ img {
 }
 
 ::selection {
-  background: var(--brand-200);
-  color: var(--brand-700);
+  background: color-mix(in srgb, var(--brand-500) 40%, transparent);
+  color: var(--text);
 }
 
 :focus-visible {
@@ -145,6 +180,13 @@ img {
   display: grid;
   place-items: center;
 }
+/* Aurora gradient text — used for headline accents. */
+.text-gradient {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
 
 /* ---- Animations ---- */
 @keyframes spin {
@@ -155,7 +197,7 @@ img {
 @keyframes pop-in {
   0% {
     opacity: 0;
-    transform: scale(0.9) translateY(8px);
+    transform: scale(0.86) translateY(10px);
   }
   100% {
     opacity: 1;
@@ -165,7 +207,7 @@ img {
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
@@ -184,6 +226,15 @@ img {
   }
   50% {
     transform: translateY(-8px);
+  }
+}
+@keyframes glow-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+  }
+  50% {
+    opacity: 1;
   }
 }
 

@@ -2,6 +2,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BottomNav } from './BottomNav';
 import { Spinner } from '../ui/primitives';
+import { hasOnboarded } from '../../lib/onboarding';
 
 /** Authenticated/guest layout: scrollable content + persistent bottom nav. */
 export function AppShell() {
@@ -18,6 +19,11 @@ export function AppShell() {
 
   if (!session && !isGuest) {
     return <Navigate to="/" replace state={{ from: location.pathname }} />;
+  }
+
+  // First visit: walk through onboarding before landing in the app.
+  if (!hasOnboarded()) {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return (

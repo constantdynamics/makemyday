@@ -260,19 +260,21 @@ export default function DashboardScreen() {
       )}
 
       <section className="dash__spin">
-        <h2 className="section-title">{t('dashboard.spinTitle')}</h2>
-        <p className="dash__hint">{t('dashboard.spinHint')}</p>
-        {loading ? (
-          <div className="wheel wheel--skeleton" />
-        ) : (
-          <SpinWheel
-            categories={categories}
-            spinning={spinning}
-            onSpinStart={() => setSpinning(true)}
-            onResult={onResult}
-            label={t('dashboard.spinTitle')}
-          />
-        )}
+        <div className="stage">
+          <h2 className="section-title">{t('dashboard.spinTitle')}</h2>
+          <p className="dash__hint">{t('dashboard.spinHint')}</p>
+          {loading ? (
+            <div className="wheel wheel--skeleton" />
+          ) : (
+            <SpinWheel
+              categories={categories}
+              spinning={spinning}
+              onSpinStart={() => setSpinning(true)}
+              onResult={onResult}
+              label={t('dashboard.spinTitle')}
+            />
+          )}
+        </div>
       </section>
 
       {status !== 'ready' && status !== 'loading' && (
@@ -308,7 +310,10 @@ export default function DashboardScreen() {
                 >
                   <span
                     className="poi-row__icon"
-                    style={{ background: `${cat?.color ?? '#888'}22`, color: cat?.color }}
+                    style={{
+                      background: `color-mix(in srgb, ${cat?.color ?? '#888'} 16%, transparent)`,
+                      color: cat?.color,
+                    }}
                   >
                     <Icon name={cat?.icon ?? 'map-pin'} size={18} />
                   </span>
@@ -378,7 +383,12 @@ export default function DashboardScreen() {
       <Sheet open={!!adventure} onClose={closeAdventure} title={t('dashboard.yourAdventure')}>
         {adventure && (
           <div className="adv">
-            <div className="adv__emoji" style={{ background: `${adventure.category.color}22` }}>
+            <div
+              className="adv__emoji"
+              style={{
+                background: `color-mix(in srgb, ${adventure.category.color} 18%, transparent)`,
+              }}
+            >
               <span>{adventure.emoji}</span>
             </div>
             <Badge color={adventure.category.color}>{categoryName(adventure.category, lang)}</Badge>
