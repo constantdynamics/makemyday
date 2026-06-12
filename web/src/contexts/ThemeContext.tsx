@@ -25,9 +25,10 @@ function systemDark(): boolean {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
+  // Dark is the face of the app: new users start dark, light stays available.
   const [pref, setPrefState] = useState<ThemePref>(() => {
     const saved = localStorage.getItem(KEY);
-    return saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system';
+    return saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'dark';
   });
   const [sysDark, setSysDark] = useState(systemDark);
 
@@ -44,7 +45,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.setAttribute('data-theme', resolved);
     document
       .querySelector('meta[name="theme-color"]')
-      ?.setAttribute('content', resolved === 'dark' ? '#14100d' : '#f4502e');
+      ?.setAttribute('content', resolved === 'dark' ? '#08070f' : '#f5f4fc');
   }, [resolved]);
 
   const setPref = useCallback((p: ThemePref) => {

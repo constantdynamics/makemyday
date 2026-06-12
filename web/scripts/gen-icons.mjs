@@ -4,8 +4,8 @@
 import { PNG } from 'pngjs';
 import { writeFileSync } from 'node:fs';
 
-const C1 = [255, 138, 61]; // amber-glow #ff8a3d
-const C2 = [251, 46, 132]; // accent-500 #fb2e84
+const C1 = [124, 92, 255]; // brand-500 #7c5cff
+const C2 = [239, 75, 189]; // accent-500 #ef4bbd
 
 const lerp = (a, b, t) => a + (b - a) * t;
 const mix = (c1, c2, t) => [lerp(c1[0], c2[0], t), lerp(c1[1], c2[1], t), lerp(c1[2], c2[2], t)];
@@ -22,13 +22,15 @@ function inTri(px, py, ax, ay, bx, by, cx, cy) {
 
 // Returns [r,g,b,a] (0..255) for a point in the unsupersampled coordinate space.
 function sample(x, y, S) {
-  const cx = S / 2, cy = S / 2;
+  const cx = S / 2,
+    cy = S / 2;
   // background gradient (diagonal)
   const t = (x + y) / (2 * S);
   let [r, g, b] = mix(C1, C2, t);
   let a = 255;
 
-  const dx = x - cx, dy = y - cy;
+  const dx = x - cx,
+    dy = y - cy;
   const dist = Math.hypot(dx, dy);
 
   // compass ring
@@ -61,13 +63,19 @@ function render(size) {
   const png = new PNG({ width: size, height: size });
   for (let y = 0; y < size; y++) {
     for (let x = 0; x < size; x++) {
-      let r = 0, g = 0, b = 0, a = 0;
+      let r = 0,
+        g = 0,
+        b = 0,
+        a = 0;
       for (let sy = 0; sy < ss; sy++) {
         for (let sx = 0; sx < ss; sx++) {
           const fx = ((x + (sx + 0.5) / ss) / size) * size;
           const fy = ((y + (sy + 0.5) / ss) / size) * size;
           const px = sample(fx, fy, size);
-          r += px[0]; g += px[1]; b += px[2]; a += px[3];
+          r += px[0];
+          g += px[1];
+          b += px[2];
+          a += px[3];
         }
       }
       const n = ss * ss;

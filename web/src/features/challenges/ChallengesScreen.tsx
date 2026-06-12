@@ -72,7 +72,7 @@ export default function ChallengesScreen() {
               <span
                 className="challenge__icon"
                 style={{
-                  background: `${DIFF_COLOR[c.difficulty]}1f`,
+                  background: `color-mix(in srgb, ${DIFF_COLOR[c.difficulty]} 14%, transparent)`,
                   color: DIFF_COLOR[c.difficulty],
                 }}
               >

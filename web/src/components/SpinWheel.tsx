@@ -12,6 +12,8 @@ interface Props {
   label: string;
 }
 
+const LIGHTS = 16;
+
 export function SpinWheel({ categories, spinning, onSpinStart, onResult, disabled, label }: Props) {
   const [rotation, setRotation] = useState(0);
   const pendingIndex = useRef<number | null>(null);
@@ -25,10 +27,10 @@ export function SpinWheel({ categories, spinning, onSpinStart, onResult, disable
     return `conic-gradient(from ${-seg / 2}deg, ${stops})`;
   }, [categories, seg]);
 
-  // Thin white spokes on every segment boundary make the wedges read clearly.
+  // Thin light spokes on every segment boundary make the wedges read clearly.
   const spokes = useMemo(() => {
     if (!categories.length) return 'none';
-    return `repeating-conic-gradient(from ${-seg / 2}deg, rgba(255,255,255,0.7) 0deg 0.6deg, transparent 0.6deg ${seg}deg)`;
+    return `repeating-conic-gradient(from ${-seg / 2}deg, rgba(255,255,255,0.65) 0deg 0.6deg, transparent 0.6deg ${seg}deg)`;
   }, [categories, seg]);
 
   const handleSpin = () => {
@@ -37,7 +39,7 @@ export function SpinWheel({ categories, spinning, onSpinStart, onResult, disable
     pendingIndex.current = index;
     const targetCenter = index * seg + seg / 2;
     const desired = (360 - targetCenter) % 360;
-    const base = rotation - (rotation % 360) + 360 * 5;
+    const base = rotation - (rotation % 360) + 360 * 6;
     setRotation(base + desired);
     onSpinStart();
   };
@@ -51,6 +53,21 @@ export function SpinWheel({ categories, spinning, onSpinStart, onResult, disable
 
   return (
     <div className={`wheel ${spinning ? 'is-spinning' : ''}`}>
+      <span className="wheel__halo" aria-hidden />
+      <div className="wheel__rim" aria-hidden>
+        {Array.from({ length: LIGHTS }, (_, i) => (
+          <span
+            key={i}
+            className="wheel__light"
+            style={
+              {
+                transform: `rotate(${(i * 360) / LIGHTS}deg) translateY(-138px)`,
+                '--i': i,
+              } as React.CSSProperties
+            }
+          />
+        ))}
+      </div>
       <div className="wheel__pointer" />
       <button
         className="wheel__disc"
@@ -70,7 +87,7 @@ export function SpinWheel({ categories, spinning, onSpinStart, onResult, disable
             <span
               key={c.id}
               className="wheel__seg-icon"
-              style={{ transform: `rotate(${angle}deg) translateY(-82px) rotate(${-angle}deg)` }}
+              style={{ transform: `rotate(${angle}deg) translateY(-92px) rotate(${-angle}deg)` }}
             >
               <Icon name={c.icon} size={22} color="#fff" />
             </span>
@@ -84,7 +101,7 @@ export function SpinWheel({ categories, spinning, onSpinStart, onResult, disable
         disabled={spinning || disabled}
         aria-label={label}
       >
-        <Icon name="dice" size={28} color="#fff" />
+        <Icon name="dice" size={30} color="#fff" />
       </button>
     </div>
   );

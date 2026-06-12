@@ -25,7 +25,7 @@ export default function ExploreScreen() {
   const [radius, setRadius] = useState(2500);
   const { origin, pois, status, requestLocation } = useNearby(categories, radius, cat);
 
-  const catColor = (id: string) => categories.find((c) => c.id === id)?.color ?? '#f4502e';
+  const catColor = (id: string) => categories.find((c) => c.id === id)?.color ?? '#7c5cff';
   const catIcon = (id: string) => categories.find((c) => c.id === id)?.icon ?? 'map-pin';
 
   return (
@@ -104,7 +104,7 @@ export default function ExploreScreen() {
                 <span
                   className="poi-row__icon"
                   style={{
-                    background: `${catColor(p.categoryId)}22`,
+                    background: `color-mix(in srgb, ${catColor(p.categoryId)} 16%, transparent)`,
                     color: catColor(p.categoryId),
                   }}
                 >
@@ -141,7 +141,7 @@ export default function ExploreScreen() {
             <CircleMarker
               center={[origin.lat, origin.lng]}
               radius={9}
-              pathOptions={{ color: '#fff', weight: 3, fillColor: '#f4502e', fillOpacity: 1 }}
+              pathOptions={{ color: '#fff', weight: 3, fillColor: '#7c5cff', fillOpacity: 1 }}
             />
             {pois.map((p) => (
               <CircleMarker
