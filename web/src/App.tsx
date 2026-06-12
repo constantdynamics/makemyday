@@ -10,6 +10,7 @@ import { Spinner } from './components/ui/primitives';
 import WelcomeScreen from './features/welcome/WelcomeScreen';
 
 const AuthScreen = lazy(() => import('./features/auth/AuthScreen'));
+const OnboardingScreen = lazy(() => import('./features/onboarding/OnboardingScreen'));
 const DashboardScreen = lazy(() => import('./features/dashboard/DashboardScreen'));
 const ExploreScreen = lazy(() => import('./features/explore/ExploreScreen'));
 const ChallengesScreen = lazy(() => import('./features/challenges/ChallengesScreen'));
@@ -38,6 +39,7 @@ export default function App() {
                   <Routes>
                     <Route path="/" element={<WelcomeScreen />} />
                     <Route path="/auth" element={<AuthScreen />} />
+                    <Route path="/onboarding" element={<OnboardingScreen />} />
                     <Route path="/premium" element={<PremiumScreen />} />
                     <Route path="/settings" element={<SettingsScreen />} />
                     <Route path="/app" element={<AppShell />}>

@@ -1,3 +1,25 @@
+.explore__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.explore__head .muted {
+  font-size: var(--fs-sm);
+}
+.poi-row__meta {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.poi-row__open.is-open {
+  color: var(--green-500);
+  font-weight: var(--fw-semibold);
+}
+.poi-row__open.is-closed {
+  color: var(--red-500);
+  font-weight: var(--fw-semibold);
+}
 .explore__radius {
   display: flex;
   align-items: center;

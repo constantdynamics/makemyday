@@ -3,10 +3,11 @@ import { MapContainer, TileLayer, CircleMarker, Popup, useMap } from 'react-leaf
 import { useI18n } from '../../i18n';
 import { useCatalog, categoryName } from '../../hooks/useCatalog';
 import { useNearby } from '../../hooks/useNearby';
-import { Segmented, Card, EmptyState, Spinner } from '../../components/ui/primitives';
+import { Segmented, Card, EmptyState, Skeleton } from '../../components/ui/primitives';
 import { Button } from '../../components/ui/Button';
 import { Icon } from '../../components/icons/Icon';
 import { directionsUrl, formatDistance, type LatLng } from '../../lib/geo';
+import { isOpenNow, openLabel } from '../../lib/openingHours';
 import './explore.css';
 
 const RADII = [1000, 2500, 5000, 10000];
@@ -30,8 +31,11 @@ export default function ExploreScreen() {
 
   return (
     <div className="explore">
-      <header className="screen-head">
-        <h1>{t('explore.title')}</h1>
+      <header className="screen-head explore__head">
+        <div>
+          <h1>{t('explore.title')}</h1>
+          <p className="muted">{t('explore.subtitle')}</p>
+        </div>
         <Segmented
           value={view}
           onChange={setView}
@@ -90,8 +94,17 @@ export default function ExploreScreen() {
           }
         />
       ) : status === 'loading' ? (
-        <div className="screen-center">
-          <Spinner />
+        <div className="explore__list" aria-busy="true">
+          {Array.from({ length: 5 }, (_, i) => (
+            <Card key={i} className="poi-row">
+              <Skeleton height={42} width={42} radius={14} />
+              <div className="poi-row__body" style={{ gap: 6 }}>
+                <Skeleton height={14} width="70%" />
+                <Skeleton height={11} width="40%" />
+              </div>
+              <Skeleton height={12} width={36} />
+            </Card>
+          ))}
         </div>
       ) : pois.length === 0 ? (
         <EmptyState icon="search" title={t('explore.noResults')} />
@@ -99,35 +112,45 @@ export default function ExploreScreen() {
         <>
           <p className="explore__count muted">{t('explore.spotsFound', { n: pois.length })}</p>
           <div className="explore__list">
-            {pois.map((p) => (
-              <Card key={p.id} className="poi-row">
-                <span
-                  className="poi-row__icon"
-                  style={{
-                    background: `color-mix(in srgb, ${catColor(p.categoryId)} 16%, transparent)`,
-                    color: catColor(p.categoryId),
-                  }}
-                >
-                  <Icon name={catIcon(p.categoryId)} size={18} />
-                </span>
-                <div className="poi-row__body">
-                  <strong>{p.name}</strong>
-                  <span className="muted">{p.kind.replace(/_/g, ' ')}</span>
-                </div>
-                <div className="poi-row__end">
-                  <span className="poi-row__dist">{formatDistance(p.distance, lang)}</span>
-                  <button
-                    className="icon-btn"
-                    aria-label="navigate"
-                    onClick={() =>
-                      window.open(directionsUrl({ lat: p.lat, lng: p.lng }, p.name), '_blank')
-                    }
+            {pois.map((p) => {
+              const open = isOpenNow(p.tags.opening_hours);
+              return (
+                <Card key={p.id} className="poi-row">
+                  <span
+                    className="poi-row__icon"
+                    style={{
+                      background: `color-mix(in srgb, ${catColor(p.categoryId)} 16%, transparent)`,
+                      color: catColor(p.categoryId),
+                    }}
                   >
-                    <Icon name="navigation" size={18} />
-                  </button>
-                </div>
-              </Card>
-            ))}
+                    <Icon name={catIcon(p.categoryId)} size={18} />
+                  </span>
+                  <div className="poi-row__body">
+                    <strong>{p.name}</strong>
+                    <span className="muted poi-row__meta">
+                      {p.kind.replace(/_/g, ' ')}
+                      {open != null && (
+                        <span className={`poi-row__open ${open ? 'is-open' : 'is-closed'}`}>
+                          · {openLabel(open, lang)}
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="poi-row__end">
+                    <span className="poi-row__dist">{formatDistance(p.distance, lang)}</span>
+                    <button
+                      className="icon-btn"
+                      aria-label="navigate"
+                      onClick={() =>
+                        window.open(directionsUrl({ lat: p.lat, lng: p.lng }, p.name), '_blank')
+                      }
+                    >
+                      <Icon name="navigation" size={18} />
+                    </button>
+                  </div>
+                </Card>
+              );
+            })}
           </div>
         </>
       ) : (
@@ -159,6 +182,12 @@ export default function ExploreScreen() {
                   <strong>{p.name}</strong>
                   <br />
                   {formatDistance(p.distance, lang)}
+                  {isOpenNow(p.tags.opening_hours) != null && (
+                    <>
+                      {' · '}
+                      {openLabel(isOpenNow(p.tags.opening_hours), lang)}
+                    </>
+                  )}
                   <br />
                   <a
                     href={directionsUrl({ lat: p.lat, lng: p.lng }, p.name)}
