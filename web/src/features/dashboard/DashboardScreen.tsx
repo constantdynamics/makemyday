@@ -1,55 +1,47 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useI18n } from '../../i18n';
 import { useToast } from '../../contexts/ToastContext';
 import { useSession } from '../../contexts/SessionContext';
-import {
-  useCatalog,
-  activityTitle,
-  activityDescription,
-  categoryName,
-} from '../../hooks/useCatalog';
+import { useCatalog, categoryName } from '../../hooks/useCatalog';
 import { useNearby } from '../../hooks/useNearby';
 import { useCompletions } from '../../hooks/useCompletions';
 import { useWeather } from '../../hooks/useWeather';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { uploadAdventurePhoto } from '../../lib/uploadPhoto';
 import { weatherSummary } from '../../lib/weather';
-import { isOpenNow, openLabel } from '../../lib/openingHours';
+import { openLabel } from '../../lib/openingHours';
 import {
   TRANSPORT_RADIUS,
   TRANSPORT_ICON,
   TIME_PRESETS,
   GROUP_ICON,
-  sessionFiltered,
   skipLimit,
   formatMinutes,
   type Transport,
   type GroupSize,
 } from '../../lib/session';
-import { SpinWheel } from '../../components/SpinWheel';
+import {
+  loadMechanic,
+  saveMechanic,
+  mechanicMeta,
+  tint,
+  type MechanicId,
+} from '../../lib/mechanic';
+import { usePick, type Pick } from '../pick/usePick';
+import { WheelMechanic } from '../pick/mechanics/WheelMechanic';
+import { MechanicHost } from '../pick/MechanicHost';
+import { MethodSheet } from '../pick/MethodSheet';
+import type { Phase } from '../pick/types';
 import { Button } from '../../components/ui/Button';
 import { Sheet } from '../../components/ui/Sheet';
 import { Card, Badge, Segmented } from '../../components/ui/primitives';
 import { Icon } from '../../components/icons/Icon';
 import { StatGrid } from '../profile/StatGrid';
-import { directionsUrl, formatDistance, type LatLng } from '../../lib/geo';
-import type { Category } from '../../types/db';
+import { directionsUrl, formatDistance } from '../../lib/geo';
 import './dashboard.css';
-
-interface Adventure {
-  title: string;
-  description: string;
-  category: Category;
-  source: 'curated' | 'osm';
-  coords?: LatLng;
-  placeName?: string;
-  distance?: number;
-  emoji: string;
-  /** true=open, false=closed, null/undefined=unknown. */
-  openState?: boolean | null;
-  openingHours?: string;
-}
+import '../pick/pick.css';
 
 export default function DashboardScreen() {
   const { t, lang } = useI18n();
@@ -65,9 +57,27 @@ export default function DashboardScreen() {
     'all'
   );
   const weather = useWeather(origin);
+  const reducedMotion = useReducedMotion();
 
-  const [spinning, setSpinning] = useState(false);
-  const [adventure, setAdventure] = useState<Adventure | null>(null);
+  /* ---- How chance decides: the wheel, or one of the nine take-overs ---- */
+  const [mechanic, setMechanic] = useState<MechanicId>(loadMechanic);
+  const [methodOpen, setMethodOpen] = useState(false);
+  const [hostOpen, setHostOpen] = useState(false);
+  const [phase, setPhase] = useState<Phase>('idle');
+  const meta = mechanicMeta(mechanic);
+
+  const api = usePick({
+    categories,
+    activities,
+    pois,
+    origin,
+    config,
+    preferIndoor: !!weather?.preferIndoor,
+    lang,
+  });
+
+  const [adventure, setAdventure] = useState<Pick | null>(null);
+  const [pick, setPick] = useState<Pick | null>(null);
   const [rating, setRating] = useState(0);
   const [completing, setCompleting] = useState(false);
   const [chickening, setChickening] = useState(false);
@@ -98,59 +108,60 @@ export default function DashboardScreen() {
 
   const name = profile?.display_name || profile?.username || t('dashboard.explorer');
 
-  const buildAdventure = (cat: Category): Adventure => {
-    const localPois = pois.filter((p) => p.categoryId === cat.id);
-    if (origin && localPois.length) {
-      // Prefer places that aren't explicitly closed right now; fall back to the
-      // full list if opening hours rule everything out.
-      const openish = localPois.filter((p) => isOpenNow(p.tags.opening_hours) !== false);
-      const pickFrom = openish.length ? openish : localPois;
-      const poi = pickFrom[Math.floor(Math.random() * Math.min(pickFrom.length, 8))];
-      const verb = lang === 'nl' ? 'Bezoek' : 'Visit';
-      return {
-        title: `${verb} ${poi.name}`,
-        description: categoryName(cat, lang),
-        category: cat,
-        source: 'osm',
-        coords: { lat: poi.lat, lng: poi.lng },
-        placeName: poi.name,
-        distance: poi.distance,
-        emoji: '📍',
-        openState: isOpenNow(poi.tags.opening_hours),
-        openingHours: poi.tags.opening_hours,
-      };
-    }
-    const inCat = sessionFiltered(
-      activities.filter((a) => a.category_id === cat.id),
-      config
-    );
-    let pool = inCat.length ? inCat : sessionFiltered(activities, config);
-    // When it's wet or cold, steer toward indoor activities if we can.
-    if (weather?.preferIndoor) {
-      const indoor = pool.filter((a) => a.indoor);
-      if (indoor.length) pool = indoor;
-    }
-    const a = pool[Math.floor(Math.random() * pool.length)];
-    return {
-      title: activityTitle(a, lang),
-      description: activityDescription(a, lang),
-      category: cat,
-      source: 'curated',
-      emoji: a.emoji,
-    };
-  };
+  /* ---- Mechanic state machine, shared by the wheel and the host ---- */
+  // A mechanic captures its callbacks when it starts, seconds before they fire,
+  // so the settle handlers read the draw from a ref rather than stale state.
+  const pickRef = useRef<Pick | null>(null);
 
-  const onResult = (cat: Category) => {
-    setSpinning(false);
+  const onStart = useCallback(
+    (supplied?: Pick | null) => {
+      const next = supplied ?? api.drawPick();
+      if (!next) return;
+      pickRef.current = next;
+      setPick(next);
+      setPhase('running');
+    },
+    [api]
+  );
+  const onSettled = useCallback(() => setPhase('done'), []);
+  const onReset = useCallback(() => {
+    pickRef.current = null;
+    setPhase('idle');
+    setPick(null);
+  }, []);
+
+  const openAdventure = useCallback((next: Pick) => {
     setPhotoFile(null);
     setRating(0);
-    setAdventure(buildAdventure(cat));
+    setAdventure(next);
+  }, []);
+
+  /** The wheel opens the sheet by itself; the take-overs do it on "ik doe het". */
+  const onWheelSettled = useCallback(() => {
+    setPhase('done');
+    if (pickRef.current) openAdventure(pickRef.current);
+  }, [openAdventure]);
+
+  const onAccept = useCallback(() => {
+    if (!pickRef.current) return;
+    setHostOpen(false);
+    openAdventure(pickRef.current);
+  }, [openAdventure]);
+
+  const chooseMechanic = (id: MechanicId) => {
+    setMechanic(id);
+    saveMechanic(id);
+    setMethodOpen(false);
+    onReset();
+    // The wheel lives on the dashboard; everything else takes over right away.
+    setHostOpen(id !== 'wheel');
   };
 
   const closeAdventure = () => {
     setAdventure(null);
     setPhotoFile(null);
     setRating(0);
+    onReset();
   };
 
   const accept = async () => {
@@ -260,21 +271,69 @@ export default function DashboardScreen() {
       )}
 
       <section className="dash__spin">
-        <div className="stage">
-          <h2 className="section-title">{t('dashboard.spinTitle')}</h2>
-          <p className="dash__hint">{t('dashboard.spinHint')}</p>
-          {loading ? (
-            <div className="wheel wheel--skeleton" />
-          ) : (
-            <SpinWheel
-              categories={categories}
-              spinning={spinning}
-              onSpinStart={() => setSpinning(true)}
-              onResult={onResult}
-              label={t('dashboard.spinTitle')}
-            />
-          )}
+        <div className="method-bar">
+          <span
+            className="method-bar__dot"
+            style={{ background: meta.accent, boxShadow: `0 0 8px ${meta.accent}` }}
+            aria-hidden
+          />
+          <span className="method-bar__name">{t(`mechanic.${mechanic}.name`)}</span>
+          <button className="method-bar__swap" onClick={() => setMethodOpen(true)}>
+            <Icon name="refresh" size={15} />
+            {t('method.swap')}
+          </button>
         </div>
+
+        {mechanic === 'wheel' ? (
+          <div className="stage">
+            <h2 className="section-title">{t('dashboard.spinTitle')}</h2>
+            <p className="dash__hint">{t('dashboard.spinHint')}</p>
+            <WheelMechanic
+              phase={phase}
+              pick={pick}
+              api={api}
+              onStart={onStart}
+              onSettled={onWheelSettled}
+              onAccept={onAccept}
+              onReset={onReset}
+              reducedMotion={reducedMotion}
+              categories={categories}
+              loading={loading}
+            />
+          </div>
+        ) : (
+          <button
+            className="method-entry"
+            onClick={() => setHostOpen(true)}
+            style={{
+              border: `1px solid ${tint(meta.accent, 40)}`,
+              background: `linear-gradient(165deg, ${tint(meta.accent, 20)}, rgba(255,255,255,.04))`,
+            }}
+          >
+            <span
+              className="method-entry__glow"
+              aria-hidden
+              style={{
+                background: `radial-gradient(circle, ${tint(meta.accent, 40)}, transparent 68%)`,
+              }}
+            />
+            <span
+              className="method-entry__icon"
+              style={{
+                background: tint(meta.accent, 22),
+                color: meta.accent,
+                border: `1px solid ${tint(meta.accent, 40)}`,
+              }}
+            >
+              <Icon name={meta.icon} size={26} />
+            </span>
+            <h2 className="method-entry__name">{t(`mechanic.${mechanic}.name`)}</h2>
+            <p className="method-entry__desc">{t(`mechanic.${mechanic}.desc`)}</p>
+            <span className="method-entry__cta" style={{ color: meta.accent }}>
+              {t('method.open')} <Icon name="chevron-right" size={18} />
+            </span>
+          </button>
+        )}
       </section>
 
       {status !== 'ready' && status !== 'loading' && (
@@ -328,6 +387,32 @@ export default function DashboardScreen() {
           </div>
         </section>
       )}
+
+      {hostOpen && (
+        <MechanicHost
+          mechanic={mechanic}
+          phase={phase}
+          pick={pick}
+          api={api}
+          onStart={onStart}
+          onSettled={onSettled}
+          onAccept={onAccept}
+          onReset={onReset}
+          reducedMotion={reducedMotion}
+          onClose={() => {
+            setHostOpen(false);
+            onReset();
+          }}
+          onSwap={() => setMethodOpen(true)}
+        />
+      )}
+
+      <MethodSheet
+        open={methodOpen}
+        current={mechanic}
+        onClose={() => setMethodOpen(false)}
+        onPick={chooseMechanic}
+      />
 
       <Sheet open={setupOpen} onClose={() => setSetupOpen(false)} title={t('session.title')}>
         <p className="muted session-setup__sub">{t('session.subtitle')}</p>

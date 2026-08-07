@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - claude/app-redesign-refactor-YMwNl
     paths:
       - 'web/**'
       - '.github/workflows/deploy.yml'
