@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../../contexts/ThemeContext';
 import { useI18n, type Lang } from '../../i18n';
@@ -6,13 +7,31 @@ import { Card, Segmented } from '../../components/ui/primitives';
 import { Button } from '../../components/ui/Button';
 import { Icon } from '../../components/icons/Icon';
 import { BUILD_LABEL } from '../../lib/version';
+import {
+  loadMechanic,
+  saveMechanic,
+  mechanicMeta,
+  tint,
+  type MechanicId,
+} from '../../lib/mechanic';
+import { MethodSheet } from '../pick/MethodSheet';
 import './settings.css';
+import '../pick/pick.css';
 
 export default function SettingsScreen() {
   const { t, lang, setLang } = useI18n();
   const { pref, setPref } = useTheme();
   const { user, isGuest, signOut } = useAuth();
   const navigate = useNavigate();
+  const [mechanic, setMechanic] = useState<MechanicId>(loadMechanic);
+  const [methodOpen, setMethodOpen] = useState(false);
+  const meta = mechanicMeta(mechanic);
+
+  const chooseMechanic = (id: MechanicId) => {
+    setMechanic(id);
+    saveMechanic(id);
+    setMethodOpen(false);
+  };
 
   const logout = async () => {
     await signOut();
@@ -86,6 +105,27 @@ export default function SettingsScreen() {
         </Card>
       </section>
 
+      <section className="settings__group">
+        <h2>{t('settings.choosing')}</h2>
+        <Card className="settings__row" onClick={() => setMethodOpen(true)}>
+          <span className="settings__method">
+            <span
+              className="settings__method-icon"
+              style={{ background: tint(meta.accent, 18), color: meta.accent }}
+            >
+              <Icon name={meta.icon} size={22} />
+            </span>
+            <span className="settings__method-body">
+              <strong>{t('settings.chooseMethod')}</strong>
+              <span>
+                {t(`mechanic.${mechanic}.name`)} · {t(`mechanic.${mechanic}.desc`)}
+              </span>
+            </span>
+            <Icon name="chevron-right" size={20} />
+          </span>
+        </Card>
+      </section>
+
       {user && !isGuest && (
         <section className="settings__group">
           <h2>{t('settings.account')}</h2>
@@ -101,6 +141,13 @@ export default function SettingsScreen() {
       )}
 
       <p className="settings__version">{BUILD_LABEL}</p>
+
+      <MethodSheet
+        open={methodOpen}
+        current={mechanic}
+        onClose={() => setMethodOpen(false)}
+        onPick={chooseMechanic}
+      />
     </div>
   );
 }
