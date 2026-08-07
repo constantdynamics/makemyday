@@ -67,8 +67,8 @@ unchanged even after a successful deploy.
 ### How to verify it's live
 
 The live site is GitHub Pages, deployed by `.github/workflows/deploy.yml` on
-every push to the default branch (currently `claude/app-redesign-refactor-YMwNl`;
-`main` is also wired up). To confirm a deploy:
+every push to `main` (the default branch) that touches `web/**`. To confirm a
+deploy:
 
 1. Check the **Deploy PWA to GitHub Pages** Actions run for the merge commit is
    green (`success`).
