@@ -14,7 +14,9 @@ import { bearing, compassPoint, formatDistance, type LatLng } from '../../lib/ge
 import {
   sessionFiltered,
   formatMinutes,
-  TRANSPORT_RADIUS,
+  searchRadius,
+  distanceBands,
+  type DistanceBand,
   type SessionConfig,
 } from '../../lib/session';
 import type { Poi } from '../../lib/overpass';
@@ -196,6 +198,76 @@ export function usePick({
     [buildFor, categories, drawPick, origin, pois]
   );
 
+  /**
+   * Draws from one of the eight compass sectors — the wind wheel lands on a
+   * direction first and only then asks what lies that way. Sector `i` is the
+   * 45° wedge centred on `i * 45` degrees, so N spans 337,5°–22,5°.
+   *
+   * Without a fix (or with nothing that way) you still get a suggestion: the
+   * direction is the point of the mechanic, the place is a bonus.
+   */
+  const drawInSector = useCallback(
+    (octant: number): Pick | null => {
+      const centre = (((octant % 8) + 8) % 8) * 45;
+      if (origin && pois.length) {
+        const inSector = pois.filter((p) => {
+          const diff = Math.abs(
+            ((bearing(origin, { lat: p.lat, lng: p.lng }) - centre + 540) % 360) - 180
+          );
+          return diff <= 22.5;
+        });
+        if (inSector.length) {
+          const poi = sample(
+            inSector
+              .slice()
+              .sort((a, b) => a.distance - b.distance)
+              .slice(0, 8)
+          );
+          const cat = categories.find((c) => c.id === poi.categoryId);
+          if (cat) return buildFor(cat, [poi]);
+        }
+      }
+      return drawPick();
+    },
+    [buildFor, categories, drawPick, origin, pois]
+  );
+
+  /** How many known places lie each way — the wind wheel prints it per wedge. */
+  const sectorCounts = useMemo<number[]>(() => {
+    const counts = new Array(8).fill(0);
+    if (!origin) return counts;
+    for (const p of pois) {
+      const deg = bearing(origin, { lat: p.lat, lng: p.lng });
+      counts[Math.round(deg / 45) % 8]++;
+    }
+    return counts;
+  }, [origin, pois]);
+
+  /**
+   * Draws from a kilometre band — the distance wheel lands on "1,5–3 km" and
+   * this finds something actually in that ring. Falls back outward to the
+   * nearest place beyond the band before giving up on places altogether.
+   */
+  const drawInBand = useCallback(
+    (band: DistanceBand): Pick | null => {
+      if (!origin || !pois.length) return drawPick();
+      const from = band.fromKm * 1000;
+      const to = band.toKm * 1000;
+      const inBand = pois.filter((p) => p.distance >= from && p.distance <= to);
+      const pool = inBand.length
+        ? inBand
+        : pois
+            .filter((p) => p.distance > to)
+            .sort((a, b) => a.distance - b.distance)
+            .slice(0, 4);
+      if (!pool.length) return drawPick();
+      const poi = sample(pool);
+      const cat = categories.find((c) => c.id === poi.categoryId);
+      return cat ? buildFor(cat, [poi]) : drawPick();
+    },
+    [buildFor, categories, drawPick, origin, pois]
+  );
+
   /** Every nearby place as a radar contact. */
   const blips = useMemo<Blip[]>(() => {
     if (!origin) return [];
@@ -215,10 +287,14 @@ export function usePick({
     drawPick,
     drawSeries,
     drawByRange,
+    drawInSector,
+    drawInBand,
+    sectorCounts,
+    bands: distanceBands(config),
     blips,
     canDraw,
     durationLabel,
     categories,
-    radiusMeters: TRANSPORT_RADIUS[config.transport],
+    radiusMeters: searchRadius(config),
   };
 }

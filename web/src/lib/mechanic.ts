@@ -19,7 +19,9 @@ export type MechanicId =
   | 'reels'
   | 'radar'
   | 'hold'
-  | 'letter';
+  | 'letter'
+  | 'wind'
+  | 'distance';
 
 export interface MechanicMeta {
   id: MechanicId;
@@ -43,6 +45,8 @@ export const MECHANICS: MechanicMeta[] = [
   { id: 'radar', icon: 'target', accent: '#34d399', fullscreen: true },
   { id: 'hold', icon: 'clock', accent: '#9d7bff', fullscreen: true },
   { id: 'letter', icon: 'message', accent: '#e0525f', fullscreen: true },
+  { id: 'wind', icon: 'navigation', accent: '#5ad1c8', fullscreen: true },
+  { id: 'distance', icon: 'ruler', accent: '#f0a72c', fullscreen: true },
 ];
 
 export const DEFAULT_MECHANIC: MechanicId = 'wheel';

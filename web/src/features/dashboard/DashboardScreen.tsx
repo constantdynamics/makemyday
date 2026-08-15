@@ -13,7 +13,7 @@ import { uploadAdventurePhoto } from '../../lib/uploadPhoto';
 import { weatherSummary } from '../../lib/weather';
 import { openLabel } from '../../lib/openingHours';
 import {
-  TRANSPORT_RADIUS,
+  searchRadius,
   TRANSPORT_ICON,
   TIME_PRESETS,
   GROUP_ICON,
@@ -53,7 +53,7 @@ export default function DashboardScreen() {
   const { count, complete, chickenOut } = useCompletions();
   const { origin, pois, status, requestLocation } = useNearby(
     categories,
-    TRANSPORT_RADIUS[config.transport],
+    searchRadius(config),
     'all'
   );
   const weather = useWeather(origin);
