@@ -11,6 +11,7 @@ import {
 import type { Session, User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { STORAGE_PREFIX, SITE_URL } from '../lib/config';
+import { loadGuestProfile, saveGuestProfile } from '../lib/localProgress';
 import type { Profile } from '../types/db';
 
 const GUEST_KEY = `${STORAGE_PREFIX}guest`;
@@ -21,6 +22,8 @@ interface AuthValue {
   profile: Profile | null;
   isGuest: boolean;
   loading: boolean;
+  /** Signed in, or playing as a guest — either way the app is fully usable. */
+  isReady: boolean;
   signUp: (email: string, password: string, name: string) => Promise<{ needsConfirm: boolean }>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -39,6 +42,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isGuest, setIsGuest] = useState(() => localStorage.getItem(GUEST_KEY) === '1');
   const [loading, setLoading] = useState(true);
   const loadedFor = useRef<string | null>(null);
+
+  // A guest gets a real profile too, backed by localStorage instead of Postgres,
+  // so every screen can read `profile` without asking who you are first.
+  const [guestProfile, setGuestProfile] = useState<Profile | null>(() =>
+    localStorage.getItem(GUEST_KEY) === '1' ? loadGuestProfile() : null
+  );
 
   const loadProfile = useCallback(async (user: User) => {
     const { data, error } = await supabase.rpc('mmd_ensure_profile');
@@ -97,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
     localStorage.removeItem(GUEST_KEY);
     setIsGuest(false);
+    setGuestProfile(null);
     // When email confirmation is on, there is no session yet.
     return { needsConfirm: !data.session };
   }, []);
@@ -106,18 +116,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
     localStorage.removeItem(GUEST_KEY);
     setIsGuest(false);
+    setGuestProfile(null);
   }, []);
 
+  /**
+   * Signing out drops you back into guest mode rather than to a locked door —
+   * the app works without an account, so there is nothing to lock.
+   */
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
-    localStorage.removeItem(GUEST_KEY);
-    setIsGuest(false);
     setProfile(null);
+    localStorage.setItem(GUEST_KEY, '1');
+    setIsGuest(true);
+    setGuestProfile(loadGuestProfile());
   }, []);
 
   const continueAsGuest = useCallback(() => {
     localStorage.setItem(GUEST_KEY, '1');
     setIsGuest(true);
+    setGuestProfile(loadGuestProfile());
   }, []);
 
   const refreshProfile = useCallback(async () => {
@@ -126,7 +143,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const updateProfile = useCallback(
     async (patch: Partial<Profile>) => {
-      if (!session?.user) return;
+      if (!session?.user) {
+        // Guest: the same edit, written to the device instead.
+        setGuestProfile(saveGuestProfile({ ...loadGuestProfile(), ...patch }));
+        return;
+      }
       const { data, error } = await supabase
         .from('mmd_profiles')
         .update(patch)
@@ -139,24 +160,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [session]
   );
 
+  /** Guest progress lives on the device, so patches have to be written back. */
+  const setLocalProfile = useCallback(
+    (p: Profile) => {
+      if (session) setProfile(p);
+      else setGuestProfile(saveGuestProfile(p));
+    },
+    [session]
+  );
+
   const value = useMemo<AuthValue>(
     () => ({
       session,
       user: session?.user ?? null,
-      profile,
+      profile: session ? profile : guestProfile,
       isGuest,
       loading,
+      isReady: !!session || isGuest,
       signUp,
       signIn,
       signOut,
       continueAsGuest,
       refreshProfile,
-      setLocalProfile: setProfile,
+      setLocalProfile,
       updateProfile,
     }),
     [
       session,
       profile,
+      guestProfile,
       isGuest,
       loading,
       signUp,
@@ -164,6 +196,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       signOut,
       continueAsGuest,
       refreshProfile,
+      setLocalProfile,
       updateProfile,
     ]
   );

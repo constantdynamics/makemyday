@@ -1,24 +1,30 @@
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { BottomNav } from './BottomNav';
 import { Spinner } from '../ui/primitives';
 import { hasOnboarded } from '../../lib/onboarding';
 
-/** Authenticated/guest layout: scrollable content + persistent bottom nav. */
+/**
+ * App layout: scrollable content + persistent bottom nav.
+ *
+ * There is no login gate. An account syncs your progress across devices, but it
+ * is never a condition for using the app — anyone who lands on `/app` without
+ * one is simply switched into guest mode, whose progress lives on the device.
+ */
 export function AppShell() {
-  const { session, isGuest, loading } = useAuth();
-  const location = useLocation();
+  const { session, isGuest, loading, continueAsGuest } = useAuth();
 
-  if (loading && !session && !isGuest) {
+  useEffect(() => {
+    if (!loading && !session && !isGuest) continueAsGuest();
+  }, [loading, session, isGuest, continueAsGuest]);
+
+  if (!session && !isGuest) {
     return (
       <div className="screen-center">
         <Spinner size={34} />
       </div>
     );
-  }
-
-  if (!session && !isGuest) {
-    return <Navigate to="/" replace state={{ from: location.pathname }} />;
   }
 
   // First visit: walk through onboarding before landing in the app.

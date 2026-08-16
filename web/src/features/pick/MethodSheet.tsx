@@ -1,4 +1,4 @@
-/** "Hoe wil je kiezen?" — the twelve mechanics, two to a row. */
+/** "Hoe wil je kiezen?" — the eleven mechanics, two to a row. */
 import { useI18n } from '../../i18n';
 import { Sheet } from '../../components/ui/Sheet';
 import { Icon } from '../../components/icons/Icon';

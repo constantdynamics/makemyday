@@ -1,6 +1,4 @@
-import { useNavigate } from 'react-router-dom';
 import { useI18n } from '../../i18n';
-import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { useChallenges } from '../../hooks/useChallenges';
 import { Card, Badge, ProgressBar, Spinner } from '../../components/ui/primitives';
@@ -17,9 +15,7 @@ const DIFF_COLOR: Record<string, string> = {
 
 export default function ChallengesScreen() {
   const { t, lang } = useI18n();
-  const { isGuest, profile } = useAuth();
   const { show } = useToast();
-  const navigate = useNavigate();
   const { challenges, completed, loading, completeChallenge } = useChallenges();
 
   const title = (c: Challenge) => (lang === 'nl' ? c.title_nl : c.title_en);
@@ -27,11 +23,6 @@ export default function ChallengesScreen() {
   const doneCount = Object.keys(completed).length;
 
   const onComplete = async (c: Challenge) => {
-    if (isGuest || !profile) {
-      show(t('toast.loginRequired'), 'info');
-      navigate('/auth?mode=register');
-      return;
-    }
     try {
       await completeChallenge(c.id);
       show(t('toast.challengeDone', { n: c.points }), 'success');

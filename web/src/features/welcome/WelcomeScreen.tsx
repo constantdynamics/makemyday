@@ -65,17 +65,10 @@ export default function WelcomeScreen() {
         ))}
       </div>
 
+      {/* Straight in. An account is an extra, offered underneath — never a gate. */}
       <div className="welcome__cta">
-        <Button
-          size="lg"
-          block
-          onClick={() => navigate('/auth?mode=register')}
-          iconRight="chevron-right"
-        >
+        <Button size="lg" block onClick={guest} iconRight="chevron-right">
           {t('welcome.start')}
-        </Button>
-        <Button size="lg" block variant="secondary" icon="compass" onClick={guest}>
-          {t('welcome.guest')}
         </Button>
         <button className="welcome__login" onClick={() => navigate('/auth?mode=login')}>
           {t('welcome.login')}

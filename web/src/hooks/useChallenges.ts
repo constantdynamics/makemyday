@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { completeChallengeLocal, loadGuestChallenges } from '../lib/localProgress';
 import type { Challenge, Profile } from '../types/db';
 
 export function useChallenges() {
@@ -18,6 +19,11 @@ export function useChallenges() {
         : Promise.resolve({ data: [] as { challenge_id: string; completed_at: string }[] }),
     ]);
     setChallenges(((all.data ?? []) as Challenge[]).sort((a, b) => a.points - b.points));
+    if (!session?.user) {
+      setCompleted(loadGuestChallenges());
+      setLoading(false);
+      return;
+    }
     const map: Record<string, string> = {};
     for (const row of (mine.data ?? []) as { challenge_id: string; completed_at: string }[]) {
       map[row.challenge_id] = row.completed_at;
@@ -32,6 +38,15 @@ export function useChallenges() {
 
   const completeChallenge = useCallback(
     async (id: string): Promise<Profile> => {
+      if (!session?.user) {
+        // The SQL pays out `ch.title_en` and `ch.points`; read them off the row
+        // we already loaded so the local twin awards exactly the same.
+        const ch = challenges.find((c) => c.id === id);
+        const prof = completeChallengeLocal(id, ch?.title_en ?? 'Challenge', ch?.points ?? 10);
+        setCompleted((c) => ({ ...c, [id]: new Date().toISOString() }));
+        setLocalProfile(prof);
+        return prof;
+      }
       const { data, error } = await supabase.rpc('mmd_complete_challenge', {
         p_challenge_id: id,
       });
@@ -40,7 +55,7 @@ export function useChallenges() {
       setLocalProfile(data as Profile);
       return data as Profile;
     },
-    [setLocalProfile]
+    [challenges, session, setLocalProfile]
   );
 
   return { challenges, completed, loading, refresh, completeChallenge };

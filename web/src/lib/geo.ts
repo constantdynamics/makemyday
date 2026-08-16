@@ -59,6 +59,35 @@ export function compassPoint(deg: number, lang: 'nl' | 'en'): string {
   return (lang === 'nl' ? POINTS_NL : POINTS_EN)[i];
 }
 
+/**
+ * The point you reach by walking `meters` from `from` on a fixed `bearingDeg`.
+ *
+ * The inverse of `bearing` + `distanceMeters`, so the wheel game can turn "3 km
+ * to the north-east" into an actual coordinate on the map. Spherical, which is
+ * accurate to well under a metre at the distances this app deals in.
+ */
+export function destinationPoint(from: LatLng, bearingDeg: number, meters: number): LatLng {
+  const R = 6371000;
+  const d = meters / R;
+  const brg = toRad(bearingDeg);
+  const lat1 = toRad(from.lat);
+  const lng1 = toRad(from.lng);
+  const lat2 = Math.asin(
+    Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(brg)
+  );
+  const lng2 =
+    lng1 +
+    Math.atan2(
+      Math.sin(brg) * Math.sin(d) * Math.cos(lat1),
+      Math.cos(d) - Math.sin(lat1) * Math.sin(lat2)
+    );
+  return {
+    lat: (lat2 * 180) / Math.PI,
+    // Keep longitude in [-180, 180) after crossing the antimeridian.
+    lng: (((lng2 * 180) / Math.PI + 540) % 360) - 180,
+  };
+}
+
 /** A friendly directions URL that works on any device. */
 export function directionsUrl(to: LatLng, label?: string): string {
   const q = label ? encodeURIComponent(label) : `${to.lat},${to.lng}`;

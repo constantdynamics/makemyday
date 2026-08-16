@@ -29,20 +29,12 @@ export default function ProfileScreen() {
   const [avatar, setAvatar] = useState(profile?.avatar_emoji ?? '🧭');
   const [saving, setSaving] = useState(false);
 
-  if (isGuest || !user || !profile) {
+  // A guest has a real profile too — it just lives on this device. The only
+  // thing left to wait for is the very first render before it is loaded.
+  if (!profile) {
     return (
-      <div className="profile">
-        <header className="screen-head">
-          <h1>{t('profile.title')}</h1>
-        </header>
-        <EmptyState
-          icon="user"
-          title={t('profile.guest')}
-          body={t('profile.guestSub')}
-          action={
-            <Button onClick={() => navigate('/auth?mode=register')}>{t('auth.signUp')}</Button>
-          }
-        />
+      <div className="screen-center">
+        <Spinner />
       </div>
     );
   }
@@ -103,6 +95,16 @@ export default function ProfileScreen() {
         xp={profile.xp}
         level={profile.level}
       />
+
+      {(isGuest || !user) && (
+        <Card className="profile__sync">
+          <Icon name="info" size={18} color="var(--brand-500)" />
+          <p>{t('profile.localOnly')}</p>
+          <Button variant="secondary" size="sm" onClick={() => navigate('/auth?mode=register')}>
+            {t('profile.sync')}
+          </Button>
+        </Card>
+      )}
 
       <section>
         <h2 className="section-title">{t('profile.history')}</h2>

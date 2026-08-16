@@ -1,7 +1,7 @@
 /** The contract every mechanic implements. Presentation only — see `usePick`. */
 import type { Category } from '../../types/db';
 import type { DistanceBand } from '../../lib/session';
-import type { Blip, Pick } from './usePick';
+import type { Blip, Pick, Spot } from './usePick';
 
 export type Phase = 'idle' | 'running' | 'done';
 
@@ -10,11 +10,12 @@ export interface PickApi {
   drawPick: (category?: Category) => Pick | null;
   drawSeries: (count: number) => Pick[];
   drawByRange: (t: number) => Pick | null;
-  /** Something that lies in compass sector `octant` (0 = N, clockwise). */
-  drawInSector: (octant: number) => Pick | null;
-  /** Something inside a kilometre ring. */
-  drawInBand: (band: DistanceBand) => Pick | null;
-  /** Known places per compass sector, indexed like `drawInSector`. */
+  /**
+   * The wheel game: a direction (0 = N, clockwise) plus a kilometre ring name a
+   * spot on the map, and whatever stands closest to it is the adventure.
+   */
+  drawAtSpot: (octant: number, band: DistanceBand) => Spot;
+  /** Known places per compass sector, indexed like `drawAtSpot`'s octant. */
   sectorCounts: number[];
   /** The kilometre rings this session's transport and time allow. */
   bands: DistanceBand[];
