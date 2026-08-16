@@ -15,6 +15,7 @@ import {
   type MechanicId,
 } from '../../lib/mechanic';
 import { MethodSheet } from '../pick/MethodSheet';
+import { resetGuestProgress } from '../../lib/localProgress';
 import './settings.css';
 import '../pick/pick.css';
 
@@ -35,7 +36,14 @@ export default function SettingsScreen() {
 
   const logout = async () => {
     await signOut();
-    navigate('/', { replace: true });
+    navigate('/app', { replace: true });
+  };
+
+  /** Guests have no server-side account to delete — this is the equivalent. */
+  const resetProgress = () => {
+    if (!window.confirm(t('settings.resetConfirm'))) return;
+    resetGuestProgress();
+    window.location.reload();
   };
 
   return (
@@ -126,19 +134,35 @@ export default function SettingsScreen() {
         </Card>
       </section>
 
-      {user && !isGuest && (
-        <section className="settings__group">
-          <h2>{t('settings.account')}</h2>
-          <Card className="settings__row">
-            <span className="settings__label">
-              <Icon name="user" size={18} /> {user.email}
-            </span>
-          </Card>
-          <Button variant="danger" block icon="logout" onClick={logout}>
-            {t('settings.logout')}
-          </Button>
-        </section>
-      )}
+      <section className="settings__group">
+        <h2>{t('settings.account')}</h2>
+        {user && !isGuest ? (
+          <>
+            <Card className="settings__row">
+              <span className="settings__label">
+                <Icon name="user" size={18} /> {user.email}
+              </span>
+            </Card>
+            <Button variant="danger" block icon="logout" onClick={logout}>
+              {t('settings.logout')}
+            </Button>
+          </>
+        ) : (
+          <>
+            <Card className="settings__row">
+              <span className="settings__label">
+                <Icon name="info" size={18} /> {t('settings.guestNote')}
+              </span>
+            </Card>
+            <Button variant="secondary" block icon="user" onClick={() => navigate('/auth')}>
+              {t('settings.createAccount')}
+            </Button>
+            <Button variant="danger" block icon="refresh" onClick={resetProgress}>
+              {t('settings.resetProgress')}
+            </Button>
+          </>
+        )}
+      </section>
 
       <p className="settings__version">{BUILD_LABEL}</p>
 

@@ -100,3 +100,17 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
+
+/* Guest banner: progress is real, it just lives on this device. */
+.profile__sync {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-3);
+}
+.profile__sync p {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}

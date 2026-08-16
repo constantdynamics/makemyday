@@ -13,7 +13,7 @@ import { uploadAdventurePhoto } from '../../lib/uploadPhoto';
 import { weatherSummary } from '../../lib/weather';
 import { openLabel } from '../../lib/openingHours';
 import {
-  TRANSPORT_RADIUS,
+  searchRadius,
   TRANSPORT_ICON,
   TIME_PRESETS,
   GROUP_ICON,
@@ -53,7 +53,7 @@ export default function DashboardScreen() {
   const { count, complete, chickenOut } = useCompletions();
   const { origin, pois, status, requestLocation } = useNearby(
     categories,
-    TRANSPORT_RADIUS[config.transport],
+    searchRadius(config),
     'all'
   );
   const weather = useWeather(origin);
@@ -166,15 +166,12 @@ export default function DashboardScreen() {
 
   const accept = async () => {
     if (!adventure) return;
-    if (isGuest) {
-      show(t('toast.loginRequired'), 'info');
-      navigate('/auth?mode=register');
-      return;
-    }
     setCompleting(true);
     try {
+      // Photos need storage, which needs an account; a guest's adventure counts
+      // in every other way rather than being refused outright.
       let photoUrl: string | null = null;
-      if (photoFile && profile) {
+      if (photoFile && profile && !isGuest) {
         photoUrl = await uploadAdventurePhoto(profile.id, photoFile);
       }
       const prof = await complete({
@@ -206,7 +203,7 @@ export default function DashboardScreen() {
     }
     setChickening(true);
     try {
-      if (!isGuest) await chickenOut();
+      await chickenOut();
       recordSkip();
       show(t('chicken.done'), 'info');
       closeAdventure();

@@ -66,6 +66,7 @@ const PATHS: Record<string, string> = {
   sliders: 'M4 21v-7 M4 10V3 M12 21v-9 M12 8V3 M20 21v-5 M20 12V3 M1 14h6 M9 8h6 M17 16h6',
   image:
     'M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Z M8.5 11a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z M21 16l-5-5L5 21',
+  ruler: 'M2 15.5 8.5 22 22 8.5 15.5 2 2 15.5Z M7 11l2 2 M10 8l2 2 M13 5l2 2 M4.5 13.5l2 2',
 };
 
 export interface IconProps extends Omit<SVGProps<SVGSVGElement>, 'name'> {

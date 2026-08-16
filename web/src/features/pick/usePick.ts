@@ -10,11 +10,20 @@
 import { useCallback, useMemo } from 'react';
 import { activityTitle, activityDescription, categoryName } from '../../hooks/useCatalog';
 import { isOpenNow, openLabel } from '../../lib/openingHours';
-import { bearing, compassPoint, formatDistance, type LatLng } from '../../lib/geo';
+import {
+  bearing,
+  compassPoint,
+  destinationPoint,
+  distanceMeters,
+  formatDistance,
+  type LatLng,
+} from '../../lib/geo';
 import {
   sessionFiltered,
   formatMinutes,
-  TRANSPORT_RADIUS,
+  searchRadius,
+  distanceBands,
+  type DistanceBand,
   type SessionConfig,
 } from '../../lib/session';
 import type { Poi } from '../../lib/overpass';
@@ -45,6 +54,16 @@ export interface Pick {
   heading: number | null;
   /** "NO" / "NE" — the compass point for `heading`. */
   headingLabel: string | null;
+}
+
+/** What the wheel game produces: a spot on the map, and what stands there. */
+export interface Spot {
+  /** Where the wheels pointed. Null without a location fix. */
+  target: LatLng | null;
+  /** The nearest real place to that spot, or a curated idea as a fallback. */
+  pick: Pick | null;
+  /** How far that place sits from the spot the wheels named, in metres. */
+  offMeters: number | null;
 }
 
 /** One dot on the radar screen. */
@@ -196,6 +215,56 @@ export function usePick({
     [buildFor, categories, drawPick, origin, pois]
   );
 
+  /** How many known places lie each way — the game shows it per wind direction. */
+  const sectorCounts = useMemo<number[]>(() => {
+    const counts = new Array(8).fill(0);
+    if (!origin) return counts;
+    for (const p of pois) {
+      const deg = bearing(origin, { lat: p.lat, lng: p.lng });
+      counts[Math.round(deg / 45) % 8]++;
+    }
+    return counts;
+  }, [origin, pois]);
+
+  /**
+   * The wheel game's draw: chance names a **place on the map**, not an activity.
+   *
+   * A direction (one of eight) and a distance band together describe one spot —
+   * "2,5 km to the north-east" is a coordinate, and `destinationPoint` works out
+   * which one. Whatever real place sits closest to that spot is your adventure,
+   * however odd; that arbitrariness is the game.
+   *
+   * Without a location fix there is no spot to compute, so it degrades to an
+   * ordinary draw and the mechanic shows the direction on its own.
+   */
+  const drawAtSpot = useCallback(
+    (octant: number, band: DistanceBand): Spot => {
+      const bearingDeg = (((octant % 8) + 8) % 8) * 45;
+      const meters = ((band.fromKm + band.toKm) / 2) * 1000;
+      if (!origin) return { target: null, pick: drawPick(), offMeters: null };
+
+      const target = destinationPoint(origin, bearingDeg, meters);
+      if (!pois.length) return { target, pick: drawPick(), offMeters: null };
+
+      let best = pois[0];
+      let bestOff = Infinity;
+      for (const p of pois) {
+        const off = distanceMeters(target, { lat: p.lat, lng: p.lng });
+        if (off < bestOff) {
+          bestOff = off;
+          best = p;
+        }
+      }
+      const cat = categories.find((c) => c.id === best.categoryId);
+      return {
+        target,
+        pick: cat ? buildFor(cat, [best]) : drawPick(),
+        offMeters: Math.round(bestOff),
+      };
+    },
+    [buildFor, categories, drawPick, origin, pois]
+  );
+
   /** Every nearby place as a radar contact. */
   const blips = useMemo<Blip[]>(() => {
     if (!origin) return [];
@@ -215,10 +284,13 @@ export function usePick({
     drawPick,
     drawSeries,
     drawByRange,
+    drawAtSpot,
+    sectorCounts,
+    bands: distanceBands(config),
     blips,
     canDraw,
     durationLabel,
     categories,
-    radiusMeters: TRANSPORT_RADIUS[config.transport],
+    radiusMeters: searchRadius(config),
   };
 }

@@ -1,5 +1,5 @@
 /**
- * Registry of the nine take-over mechanics. They're lazy: the dashboard only
+ * Registry of the ten take-over mechanics. They're lazy: the dashboard only
  * ever needs the wheel, so the rest stay out of the initial bundle until
  * somebody actually picks one.
  */
@@ -19,6 +19,7 @@ export const FULLSCREEN_MECHANICS: Record<Exclude<MechanicId, 'wheel'>, Loader> 
   radar: lazy(() => import('./RadarMechanic').then((m) => ({ default: m.RadarMechanic }))),
   hold: lazy(() => import('./HoldMechanic').then((m) => ({ default: m.HoldMechanic }))),
   letter: lazy(() => import('./LetterMechanic').then((m) => ({ default: m.LetterMechanic }))),
+  quest: lazy(() => import('./QuestMechanic').then((m) => ({ default: m.QuestMechanic }))),
 };
 
 export function isFullscreen(id: MechanicId): id is Exclude<MechanicId, 'wheel'> {
