@@ -227,6 +227,58 @@ export function usePick({
   }, [origin, pois]);
 
   /**
+   * The compass points worth landing on: the ones with something there.
+   *
+   * Chance may not send you into the North Sea. Every place in `pois` comes from
+   * OpenStreetMap, so it is by definition somewhere you can actually stand — if
+   * a sector holds none of them, that direction is water, motorway or farmland
+   * and the wheel skips it rather than picking a pretty coordinate in the surf.
+   *
+   * With no fix at all there is no map to run into, so all eight stay open and
+   * the draw falls back to the curated ideas.
+   */
+  const availableOctants = useMemo<number[]>(() => {
+    if (!origin || !pois.length) return [0, 1, 2, 3, 4, 5, 6, 7];
+    const open = sectorCounts.flatMap((n, i) => (n > 0 ? [i] : []));
+    return open.length ? open : [0, 1, 2, 3, 4, 5, 6, 7];
+  }, [origin, pois, sectorCounts]);
+
+  /**
+   * The distance rings worth offering **for one direction**.
+   *
+   * This is the other half of not ending up in the sea. The session's transport
+   * and time say how far you *could* travel; this narrows that to how far there
+   * is anything to travel *to* on this particular bearing. Stand on the coast
+   * facing west and the far rings simply disappear from the wheel, because
+   * nothing in that sector sits at that range.
+   */
+  const bandsFor = useCallback(
+    (octant: number): DistanceBand[] => {
+      const all = distanceBands(config);
+      if (!origin || !pois.length) return all;
+
+      const centre = (((octant % 8) + 8) % 8) * 45;
+      const inSector = pois.filter((p) => {
+        const deg = bearing(origin, { lat: p.lat, lng: p.lng });
+        return Math.abs(((deg - centre + 540) % 360) - 180) <= 22.5;
+      });
+      if (!inSector.length) return all;
+
+      // A ring counts as reachable when a real place sits inside it. The last
+      // ring also absorbs anything beyond it, so the furthest place on this
+      // bearing is always offered even when it overshoots the session's reach.
+      const last = all.length - 1;
+      const usable = all.filter((b, i) =>
+        inSector.some(
+          (p) => p.distance >= b.fromKm * 1000 && (i === last || p.distance <= b.toKm * 1000)
+        )
+      );
+      return usable.length ? usable : all;
+    },
+    [config, origin, pois]
+  );
+
+  /**
    * The wheel game's draw: chance names a **place on the map**, not an activity.
    *
    * A direction (one of eight) and a distance band together describe one spot —
@@ -286,6 +338,8 @@ export function usePick({
     drawByRange,
     drawAtSpot,
     sectorCounts,
+    availableOctants,
+    bandsFor,
     bands: distanceBands(config),
     blips,
     canDraw,

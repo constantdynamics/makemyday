@@ -55,7 +55,9 @@ export function QuestMechanic({
   const [spot, setSpot] = useState<Spot | null>(null);
   const timer = useRef<number | undefined>(undefined);
 
-  const bands = api.bands;
+  // Rings for the direction we landed on — the sea has no places in it, so a
+  // bearing with nothing at 20 km simply never offers a 20 km wedge.
+  const bands = useMemo(() => (octant == null ? api.bands : api.bandsFor(octant)), [api, octant]);
   const distSeg = bands.length ? 360 / bands.length : 0;
   const duration = reducedMotion ? REDUCED_MS : SPIN_MS;
   const ease = `transform ${duration}ms cubic-bezier(.12,.76,.14,1)`;
@@ -96,7 +98,8 @@ export function QuestMechanic({
   /** Spins the direction wheel, then hands over to the distance wheel. */
   const spinWind = useCallback(() => {
     if (spinning) return;
-    const landed = Math.floor(Math.random() * POINTS);
+    const open = api.availableOctants;
+    const landed = open[Math.floor(Math.random() * open.length)];
     setSpinning(true);
     setWindRot((prev) => {
       const desired = (360 - landed * WIND_SEG) % 360;
@@ -111,7 +114,7 @@ export function QuestMechanic({
       },
       reducedMotion ? REDUCED_MS + 40 : SETTLE_MS
     );
-  }, [reducedMotion, spinning]);
+  }, [api, reducedMotion, spinning]);
 
   /** Spins the distance wheel; the two results together name the spot. */
   const spinDistance = useCallback(() => {
@@ -207,7 +210,9 @@ export function QuestMechanic({
               {Array.from({ length: POINTS }, (_, i) => (
                 <span
                   key={i}
-                  className={`quest__label ${i % 2 === 0 ? 'is-cardinal' : ''}`}
+                  className={`quest__label ${i % 2 === 0 ? 'is-cardinal' : ''} ${
+                    api.availableOctants.includes(i) ? '' : 'is-empty'
+                  }`}
                   style={{
                     transform: `rotate(${i * WIND_SEG}deg) translateY(-92px) rotate(${-(i * WIND_SEG) - windRot}deg)`,
                     transition: ease,

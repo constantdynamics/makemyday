@@ -17,7 +17,11 @@ export interface PickApi {
   drawAtSpot: (octant: number, band: DistanceBand) => Spot;
   /** Known places per compass sector, indexed like `drawAtSpot`'s octant. */
   sectorCounts: number[];
-  /** The kilometre rings this session's transport and time allow. */
+  /** The compass points that have something there — the rest are sea or empty. */
+  availableOctants: number[];
+  /** The kilometre rings that actually hold a place on this bearing. */
+  bandsFor: (octant: number) => DistanceBand[];
+  /** The kilometre rings this session's transport and time allow, before filtering. */
   bands: DistanceBand[];
   blips: Blip[];
   canDraw: boolean;
