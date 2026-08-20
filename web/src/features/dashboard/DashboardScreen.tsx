@@ -229,9 +229,18 @@ export default function DashboardScreen() {
           <p className="dash__hello">{greeting},</p>
           <h1 className="dash__name">{name} 👋</h1>
         </div>
-        <button className="dash__avatar" onClick={() => navigate('/app/profile')}>
-          {profile?.avatar_emoji ?? '🧭'}
-        </button>
+        <div className="dash__top-actions">
+          <button
+            className="icon-btn"
+            onClick={() => navigate('/settings')}
+            aria-label={t('settings.title')}
+          >
+            <Icon name="settings" size={20} />
+          </button>
+          <button className="dash__avatar" onClick={() => navigate('/app/profile')}>
+            {profile?.avatar_emoji ?? '🧭'}
+          </button>
+        </div>
       </header>
 
       <StatGrid
@@ -268,18 +277,21 @@ export default function DashboardScreen() {
       )}
 
       <section className="dash__spin">
-        <div className="method-bar">
+        <button className="method-bar" onClick={() => setMethodOpen(true)}>
           <span
             className="method-bar__dot"
             style={{ background: meta.accent, boxShadow: `0 0 8px ${meta.accent}` }}
             aria-hidden
           />
-          <span className="method-bar__name">{t(`mechanic.${mechanic}.name`)}</span>
-          <button className="method-bar__swap" onClick={() => setMethodOpen(true)}>
+          <span className="method-bar__label">
+            <span className="method-bar__eyebrow">{t('settings.chooseMethod')}</span>
+            <span className="method-bar__name">{t(`mechanic.${mechanic}.name`)}</span>
+          </span>
+          <span className="method-bar__swap">
             <Icon name="refresh" size={15} />
             {t('method.swap')}
-          </button>
-        </div>
+          </span>
+        </button>
 
         {mechanic === 'wheel' ? (
           <div className="stage">

@@ -348,3 +348,10 @@
   color: var(--text-secondary);
   font-size: var(--fs-sm);
 }
+
+/* Settings sits here too — a lone gear on the profile screen was unfindable. */
+.dash__top-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
