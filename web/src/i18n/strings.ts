@@ -16,6 +16,7 @@ export const nl = {
   nav: {
     home: 'Start',
     explore: 'Ontdek',
+    play: 'Spelen',
     challenges: 'Uitdagingen',
     community: 'Community',
     profile: 'Profiel',
@@ -208,7 +209,7 @@ export const nl = {
     spinning: 'Draait…',
     idleWind: 'Eerst de windrichting. Draai en zie welke kant je op gaat.',
     idleDistance: 'Nu de afstand. Draai en het rad prikt een plek op de kaart.',
-    verdict: '{distance} km naar het {direction}',
+    verdict: '{distance} naar het {direction}',
     off: '{d} van die plek',
     noFix: 'Zet locatie aan om een plek te prikken',
     /* Afkortingen op het rad, met de klok mee vanaf noord. */
@@ -233,11 +234,62 @@ export const nl = {
       7: 'noordwesten',
     },
   },
+  play: {
+    title: 'Spelen',
+    subtitle: 'Laat het rad kiezen — de plek, of wat je zelf verzint.',
+    questBlurb:
+      'Twee raden kiezen een richting en een afstand, en prikken zo een echte plek op de kaart.',
+    questStart: 'Start spelmodus',
+    questWhere:
+      'Windrichting eerst, dan de kilometers. Richtingen zonder plekken slaat het rad over.',
+  },
+  wheels: {
+    title: 'Eigen radjes',
+    new: 'Nieuw rad',
+    edit: 'Bewerken',
+    delete: 'Verwijderen',
+    deleteConfirm: '"{name}" verwijderen?',
+    spin: 'Draai',
+    spinning: 'Draait…',
+    name: 'Naam van het rad',
+    namePlaceholder: 'Waar gaan we eten?',
+    icon: 'Icoon',
+    options: 'Vlakken',
+    optionsHint: '{n} ingevuld',
+    optionPlaceholder: 'Optie {n}',
+    optionCount: '{n} opties',
+    needTwo: 'Vul minstens twee opties in',
+    errNoName: 'Geef het rad een naam.',
+    errTwo: 'Een rad heeft minstens twee opties nodig.',
+    errFull: 'Je hebt het maximale aantal radjes bereikt.',
+    emptyTitle: 'Nog geen eigen radjes',
+    emptyBody: 'Maak een rad voor elke keuze die je niet wilt maken. Begin met een voorbeeld:',
+    tpl: {
+      dinner: {
+        name: 'Waar gaan we eten?',
+        options: 'Italiaans, Sushi, Thuis koken, Afhalen, Grieks, Burger, Indiaas, Iets nieuws',
+      },
+      shop: {
+        name: 'Wat halen we bij de supermarkt?',
+        options: 'Pasta, Soep, Wok, Ovenschotel, Salade, Pizza, Curry, Verrassing',
+      },
+      evening: {
+        name: 'Wat doen we vanavond?',
+        options: 'Film, Serie, Spelletje, Wandelen, Lezen, Bellen, Vroeg naar bed, Iets bakken',
+      },
+    },
+  },
   session: {
     title: 'Jouw sessie',
     setup: 'Sessie instellen',
     subtitle: 'Stem het rad af op je vervoer, tijd en gezelschap',
     transport: 'Vervoer',
+    range: 'Afstand op het rad · {transport}',
+    rangeFrom: 'Vanaf',
+    rangeTo: 'Tot',
+    rangeNote:
+      'Elk vervoermiddel heeft zijn eigen bereik. Het rad krijgt acht vakken en laat afstanden weg waar niets ligt.',
+    rangeReset: 'Terug naar standaard',
     time: 'Beschikbare tijd',
     company: 'Gezelschap',
     walk: 'Lopen',
@@ -390,6 +442,7 @@ export const en: DeepStrings = {
   nav: {
     home: 'Home',
     explore: 'Explore',
+    play: 'Play',
     challenges: 'Challenges',
     community: 'Community',
     profile: 'Profile',
@@ -581,7 +634,7 @@ export const en: DeepStrings = {
     spinning: 'Spinning…',
     idleWind: 'Direction first. Spin to see which way you are heading.',
     idleDistance: 'Now the distance. Spin and the wheel pins a spot on the map.',
-    verdict: '{distance} km to the {direction}',
+    verdict: '{distance} to the {direction}',
     off: '{d} from that spot',
     noFix: 'Turn on location to pin a spot',
     /* Wheel abbreviations, clockwise from north. */
@@ -606,11 +659,61 @@ export const en: DeepStrings = {
       7: 'north-west',
     },
   },
+  play: {
+    title: 'Play',
+    subtitle: 'Let the wheel choose — the place, or whatever you come up with.',
+    questBlurb: 'Two wheels pick a direction and a distance, pinning a real spot on the map.',
+    questStart: 'Start game mode',
+    questWhere: 'Direction first, then the kilometres. Directions with nothing there are skipped.',
+  },
+  wheels: {
+    title: 'Your own wheels',
+    new: 'New wheel',
+    edit: 'Edit',
+    delete: 'Delete',
+    deleteConfirm: 'Delete "{name}"?',
+    spin: 'Spin',
+    spinning: 'Spinning…',
+    name: 'Wheel name',
+    namePlaceholder: 'Where shall we eat?',
+    icon: 'Icon',
+    options: 'Wedges',
+    optionsHint: '{n} filled in',
+    optionPlaceholder: 'Option {n}',
+    optionCount: '{n} options',
+    needTwo: 'Fill in at least two options',
+    errNoName: 'Give the wheel a name.',
+    errTwo: 'A wheel needs at least two options.',
+    errFull: 'You have reached the maximum number of wheels.',
+    emptyTitle: 'No wheels of your own yet',
+    emptyBody: 'Build a wheel for every choice you would rather not make. Start from an example:',
+    tpl: {
+      dinner: {
+        name: 'Where shall we eat?',
+        options: 'Italian, Sushi, Cook at home, Takeaway, Greek, Burger, Indian, Something new',
+      },
+      shop: {
+        name: 'What are we buying?',
+        options: 'Pasta, Soup, Stir-fry, Bake, Salad, Pizza, Curry, Surprise',
+      },
+      evening: {
+        name: 'What shall we do tonight?',
+        options:
+          'Film, Series, Board game, A walk, Read, Call someone, Early night, Bake something',
+      },
+    },
+  },
   session: {
     title: 'Your session',
     setup: 'Set up session',
     subtitle: 'Tune the wheel to your transport, time and company',
     transport: 'Transport',
+    range: 'Wheel distance · {transport}',
+    rangeFrom: 'From',
+    rangeTo: 'To',
+    rangeNote:
+      'Every transport mode keeps its own range. The wheel gets eight wedges and drops the distances with nothing there.',
+    rangeReset: 'Back to default',
     time: 'Time available',
     company: 'Company',
     walk: 'Walking',
@@ -749,8 +852,13 @@ export const en: DeepStrings = {
 };
 
 export type Dict = typeof nl;
-type DeepStrings = {
-  [K in keyof Dict]: Dict[K] extends object
-    ? { [J in keyof Dict[K]]: Dict[K][J] extends object ? Record<string, string> : string }
-    : string;
+
+/**
+ * The English dictionary must mirror the Dutch one exactly — same keys, same
+ * nesting, strings at every leaf. Recursive rather than fixed-depth, so nesting
+ * a group of related strings (say a set of wheel templates) doesn't need the
+ * type widened first.
+ */
+type DeepStrings<T = Dict> = {
+  [K in keyof T]: T[K] extends object ? DeepStrings<T[K]> : string;
 };

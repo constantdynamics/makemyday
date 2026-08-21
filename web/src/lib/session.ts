@@ -55,9 +55,13 @@ export function reachKm(cfg: SessionConfig): number {
  * clamped: too small and a short session finds nothing at all, too large and we
  * suggest places you can't possibly get to and back from.
  */
-export function searchRadius(cfg: SessionConfig): number {
+export function searchRadius(cfg: SessionConfig, ranges: RangePrefs = DEFAULT_RANGES): number {
   const [min, max] = RADIUS_LIMITS[cfg.transport];
-  return Math.round(Math.min(max, Math.max(min, reachKm(cfg) * 1000)));
+  const byTime = reachKm(cfg) * 1000;
+  // Whatever the user set their wheel to must be searchable, even when it
+  // reaches further than the time budget alone would justify.
+  const wanted = clampRange(cfg.transport, ranges[cfg.transport]).maxKm * 1000;
+  return Math.round(Math.min(Math.max(max, wanted), Math.max(min, byTime, wanted)));
 }
 
 /** Rounds a distance to something a human would say out loud. */
@@ -72,25 +76,93 @@ export interface DistanceBand {
   toKm: number;
 }
 
-/** Where the band edges fall as a fraction of the full reach. */
-const BAND_EDGES = [0, 0.1, 0.22, 0.38, 0.58, 0.78, 1];
+/** How far the wheel may send you on one transport mode, in kilometres. */
+export interface TransportRange {
+  minKm: number;
+  maxKm: number;
+}
+
+export type RangePrefs = Record<Transport, TransportRange>;
 
 /**
- * The six rings the kilometre wheel offers, from "around the corner" to the
- * edge of what your transport and time allow. Edges are rounded for legibility
- * and then de-duplicated, so a very short session simply gets fewer, wider
- * bands instead of six identical ones.
+ * Hard stops on what a range may be set to. Someone can want a 60 km car wheel;
+ * nobody is served by a 400 km one, or by a wheel whose rings are 5 m apart.
  */
-export function distanceBands(cfg: SessionConfig): DistanceBand[] {
-  const reach = Math.min(reachKm(cfg), searchRadius(cfg) / 1000);
-  const edges: number[] = [];
-  for (const f of BAND_EDGES) {
-    const km = roundKm(reach * f);
-    if (!edges.length || km > edges[edges.length - 1]) edges.push(km);
+export const RANGE_LIMITS: Record<Transport, TransportRange> = {
+  walk: { minKm: 0.2, maxKm: 25 },
+  bike: { minKm: 0.5, maxKm: 60 },
+  car: { minKm: 1, maxKm: 200 },
+};
+
+/**
+ * Defaults, chosen to match what the time-based model produced for a typical
+ * two-hour outing. They are only a starting point: the ranges are the user's to
+ * set, per transport mode, and `RangePrefs` is what actually drives the wheel.
+ */
+export const DEFAULT_RANGES: RangePrefs = {
+  walk: { minKm: 0, maxKm: 2 },
+  bike: { minKm: 0, maxKm: 6.5 },
+  car: { minKm: 0, maxKm: 20 },
+};
+
+export function clampRange(transport: Transport, range: TransportRange): TransportRange {
+  const cap = RANGE_LIMITS[transport];
+  const maxKm = Math.min(cap.maxKm, Math.max(cap.minKm, range.maxKm));
+  // The floor may equal zero ("from right here"), but never overtake the ceiling.
+  const minKm = Math.min(Math.max(0, range.minKm), maxKm - cap.minKm);
+  return { minKm: Math.max(0, minKm), maxKm };
+}
+
+/**
+ * The wheel is always a proper wheel. Eight is the floor the design asks for —
+ * fewer wedges stops reading as a wheel and starts reading as a pie chart.
+ */
+export const MIN_WEDGES = 8;
+
+/**
+ * The rings the kilometre wheel offers for one transport mode.
+ *
+ * Edges grow rather than step evenly: the near rings are narrow, because the
+ * difference between 200 m and 600 m matters when you are walking, while the
+ * far ones are wide, because 18 km and 20 km are the same errand. Rounded for
+ * legibility, then de-duplicated — and if rounding collapses two edges into
+ * one, the wheel is rebuilt at full precision rather than losing a wedge.
+ */
+export function bandsForRange(range: TransportRange, wedges = MIN_WEDGES): DistanceBand[] {
+  const span = Math.max(0.1, range.maxKm - range.minKm);
+  const edgeAt = (i: number) => range.minKm + span * Math.pow(i / wedges, 1.45);
+
+  const rounded: number[] = [];
+  for (let i = 0; i <= wedges; i++) {
+    const km = roundKm(edgeAt(i));
+    if (!rounded.length || km > rounded[rounded.length - 1]) rounded.push(km);
   }
-  // A reach under ~200 m rounds everything to zero; give it one honest band.
-  if (edges.length < 2) return [{ fromKm: 0, toKm: Math.max(0.3, roundKm(reach)) }];
+  // Rounding swallowed a wedge (a very short range): keep the exact edges, which
+  // still read fine because they are small numbers with one decimal.
+  const edges =
+    rounded.length === wedges + 1
+      ? rounded
+      : Array.from({ length: wedges + 1 }, (_, i) => Math.round(edgeAt(i) * 100) / 100);
+
   return edges.slice(0, -1).map((from, i) => ({ fromKm: from, toKm: edges[i + 1] }));
+}
+
+/**
+ * Whether a set of rings reads better in metres. A 500 m walking wheel labelled
+ * in kilometres is a column of "0,0" and "0,1"; in metres it is legible.
+ */
+export function bandsInMetres(bands: DistanceBand[]): boolean {
+  return bands.length > 0 && bands[bands.length - 1].toKm < 1;
+}
+
+/** Formats one ring edge in whichever unit the wheel is using. */
+export function formatBandEdge(km: number, metres: boolean, lang: 'nl' | 'en'): string {
+  return metres ? String(Math.round(km * 1000)) : formatKm(km, lang);
+}
+
+/** The rings for the session's current transport mode. */
+export function distanceBands(cfg: SessionConfig, ranges: RangePrefs = DEFAULT_RANGES) {
+  return bandsForRange(clampRange(cfg.transport, ranges[cfg.transport]));
 }
 
 export const TRANSPORT_ICON: Record<Transport, string> = {

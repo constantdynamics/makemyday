@@ -15,12 +15,9 @@ import { openLabel } from '../../lib/openingHours';
 import {
   searchRadius,
   TRANSPORT_ICON,
-  TIME_PRESETS,
   GROUP_ICON,
   skipLimit,
   formatMinutes,
-  type Transport,
-  type GroupSize,
 } from '../../lib/session';
 import {
   loadMechanic,
@@ -33,10 +30,11 @@ import { usePick, type Pick } from '../pick/usePick';
 import { WheelMechanic } from '../pick/mechanics/WheelMechanic';
 import { MechanicHost } from '../pick/MechanicHost';
 import { MethodSheet } from '../pick/MethodSheet';
+import { SessionSheet } from '../session/SessionSheet';
 import type { Phase } from '../pick/types';
 import { Button } from '../../components/ui/Button';
 import { Sheet } from '../../components/ui/Sheet';
-import { Card, Badge, Segmented } from '../../components/ui/primitives';
+import { Card, Badge } from '../../components/ui/primitives';
 import { Icon } from '../../components/icons/Icon';
 import { StatGrid } from '../profile/StatGrid';
 import { directionsUrl, formatDistance } from '../../lib/geo';
@@ -48,12 +46,12 @@ export default function DashboardScreen() {
   const { profile, isGuest } = useAuth();
   const { show } = useToast();
   const navigate = useNavigate();
-  const { config, update, skipsUsed, recordSkip, resetSkips } = useSession();
+  const { config, ranges, skipsUsed, recordSkip, resetSkips } = useSession();
   const { categories, activities, loading } = useCatalog();
   const { count, complete, chickenOut } = useCompletions();
   const { origin, pois, status, requestLocation } = useNearby(
     categories,
-    searchRadius(config),
+    searchRadius(config, ranges),
     'all'
   );
   const weather = useWeather(origin);
@@ -72,6 +70,7 @@ export default function DashboardScreen() {
     pois,
     origin,
     config,
+    ranges,
     preferIndoor: !!weather?.preferIndoor,
     lang,
   });
@@ -423,56 +422,7 @@ export default function DashboardScreen() {
         onPick={chooseMechanic}
       />
 
-      <Sheet open={setupOpen} onClose={() => setSetupOpen(false)} title={t('session.title')}>
-        <p className="muted session-setup__sub">{t('session.subtitle')}</p>
-
-        <p className="field__label">{t('session.transport')}</p>
-        <Segmented<Transport>
-          value={config.transport}
-          onChange={(v) => update({ transport: v })}
-          options={[
-            { value: 'walk', label: t('session.walk'), icon: 'walk' },
-            { value: 'bike', label: t('session.bike'), icon: 'bike' },
-            { value: 'car', label: t('session.car'), icon: 'car' },
-          ]}
-        />
-
-        <p className="field__label">{t('session.time')}</p>
-        <div className="session-setup__times">
-          {TIME_PRESETS.map((m) => (
-            <button
-              key={m}
-              className={`chip ${config.minutes === m ? 'is-active' : ''}`}
-              onClick={() => update({ minutes: m })}
-            >
-              {formatMinutes(m, lang)}
-            </button>
-          ))}
-        </div>
-
-        <p className="field__label">{t('session.company')}</p>
-        <Segmented<GroupSize>
-          value={config.group}
-          onChange={(v) => update({ group: v })}
-          options={[
-            { value: 'solo', label: t('session.solo'), icon: 'user' },
-            { value: 'duo', label: t('session.duo'), icon: 'heart' },
-            { value: 'group', label: t('session.group'), icon: 'users' },
-          ]}
-        />
-
-        <Button
-          block
-          size="lg"
-          className="session-setup__apply"
-          onClick={() => {
-            resetSkips();
-            setSetupOpen(false);
-          }}
-        >
-          {t('session.apply')}
-        </Button>
-      </Sheet>
+      <SessionSheet open={setupOpen} onClose={() => setSetupOpen(false)} onApply={resetSkips} />
 
       <Sheet open={!!adventure} onClose={closeAdventure} title={t('dashboard.yourAdventure')}>
         {adventure && (

@@ -13,6 +13,7 @@ const AuthScreen = lazy(() => import('./features/auth/AuthScreen'));
 const OnboardingScreen = lazy(() => import('./features/onboarding/OnboardingScreen'));
 const DashboardScreen = lazy(() => import('./features/dashboard/DashboardScreen'));
 const ExploreScreen = lazy(() => import('./features/explore/ExploreScreen'));
+const PlayScreen = lazy(() => import('./features/play/PlayScreen'));
 const ChallengesScreen = lazy(() => import('./features/challenges/ChallengesScreen'));
 const CommunityScreen = lazy(() => import('./features/community/CommunityScreen'));
 const ProfileScreen = lazy(() => import('./features/profile/ProfileScreen'));
@@ -45,6 +46,7 @@ export default function App() {
                     <Route path="/app" element={<AppShell />}>
                       <Route index element={<DashboardScreen />} />
                       <Route path="explore" element={<ExploreScreen />} />
+                      <Route path="play" element={<PlayScreen />} />
                       <Route path="challenges" element={<ChallengesScreen />} />
                       <Route path="community" element={<CommunityScreen />} />
                       <Route path="profile" element={<ProfileScreen />} />
