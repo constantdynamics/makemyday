@@ -23,7 +23,9 @@ import {
   formatMinutes,
   searchRadius,
   distanceBands,
+  DEFAULT_RANGES,
   type DistanceBand,
+  type RangePrefs,
   type SessionConfig,
 } from '../../lib/session';
 import type { Poi } from '../../lib/overpass';
@@ -81,6 +83,8 @@ interface Options {
   pois: Poi[];
   origin: LatLng | null;
   config: SessionConfig;
+  /** How far the wheel may send you, per transport mode. */
+  ranges?: RangePrefs;
   /** From `useWeather` — steers the curated pool indoors. */
   preferIndoor: boolean;
   lang: 'nl' | 'en';
@@ -96,6 +100,7 @@ export function usePick({
   pois,
   origin,
   config,
+  ranges = DEFAULT_RANGES,
   preferIndoor,
   lang,
 }: Options) {
@@ -254,7 +259,7 @@ export function usePick({
    */
   const bandsFor = useCallback(
     (octant: number): DistanceBand[] => {
-      const all = distanceBands(config);
+      const all = distanceBands(config, ranges);
       if (!origin || !pois.length) return all;
 
       const centre = (((octant % 8) + 8) % 8) * 45;
@@ -275,7 +280,7 @@ export function usePick({
       );
       return usable.length ? usable : all;
     },
-    [config, origin, pois]
+    [config, ranges, origin, pois]
   );
 
   /**
@@ -340,11 +345,11 @@ export function usePick({
     sectorCounts,
     availableOctants,
     bandsFor,
-    bands: distanceBands(config),
+    bands: distanceBands(config, ranges),
     blips,
     canDraw,
     durationLabel,
     categories,
-    radiusMeters: searchRadius(config),
+    radiusMeters: searchRadius(config, ranges),
   };
 }

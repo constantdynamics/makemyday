@@ -1,0 +1,437 @@
+/* ==========================================================================
+   Spelen — the game-mode hero, your own wheels, and the wheel editor.
+   ========================================================================== */
+
+.play {
+  padding-bottom: var(--sp-4);
+}
+
+/* ---- Spelmodus hero ------------------------------------------------------ */
+.play__hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  background:
+    radial-gradient(
+      120% 80% at 0% 0%,
+      color-mix(in srgb, #5ad1c8 14%, transparent),
+      transparent 60%
+    ),
+    var(--surface-1);
+  border: 1px solid color-mix(in srgb, #5ad1c8 28%, transparent);
+}
+.play__hero-head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+}
+.play__hero-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 auto;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, #5ad1c8 18%, transparent);
+  color: #5ad1c8;
+}
+.play__hero-head h2 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: var(--fw-bold);
+}
+.play__hero-head p {
+  font-size: var(--fs-sm);
+  margin-top: 2px;
+}
+.play__hero-note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+/* Transport + range, tappable straight into the session sheet. */
+.play__range {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  padding: var(--sp-2);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.play__range-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 11px;
+  border-radius: var(--r-full);
+  background: var(--surface-3);
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  white-space: nowrap;
+}
+.play__range-edit {
+  margin-left: auto;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+}
+
+/* ---- Your own wheels ----------------------------------------------------- */
+.play__section {
+  margin-top: var(--sp-5);
+}
+.play__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+.play__section-head .section-title {
+  margin: 0;
+}
+
+.play__wheels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.play__wheel {
+  padding: 0;
+  overflow: hidden;
+}
+.play__wheel-title {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  width: 100%;
+  padding: var(--sp-3);
+  text-align: left;
+}
+.play__wheel-title > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.play__wheel-title strong {
+  font-size: var(--fs-md);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.play__wheel-title .muted {
+  font-size: 12px;
+}
+.play__wheel-emoji {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: 21px;
+}
+.play__wheel-actions {
+  display: flex;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3) var(--sp-3);
+}
+.play__wheel-actions .btn {
+  flex: 1;
+}
+.play__wheel-warn {
+  padding: 0 var(--sp-3) var(--sp-3);
+  font-size: var(--fs-sm);
+  color: var(--text-secondary);
+}
+
+/* Starter wheels on an empty list. */
+.play__templates {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin-top: var(--sp-3);
+}
+.play__template {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-lg);
+  border: 1px dashed var(--border-strong);
+  background: var(--surface-1);
+  text-align: left;
+}
+.play__template-emoji {
+  font-size: 22px;
+}
+.play__template-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: var(--fw-semibold);
+}
+.play__template-count {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ---- The custom wheel itself --------------------------------------------- */
+.cwheel {
+  position: relative;
+  width: 270px;
+  height: 270px;
+  max-width: 100%;
+  margin: var(--sp-2) auto var(--sp-6);
+}
+.cwheel__pointer {
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 17px;
+  height: 23px;
+  margin-left: -8.5px;
+  z-index: 4;
+  pointer-events: none;
+  background: linear-gradient(180deg, #fff, #c9c4e4);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.45));
+}
+.cwheel__disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid var(--surface-1);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow:
+    0 0 0 1px var(--border-strong),
+    0 14px 34px rgba(0, 0, 0, 0.35),
+    inset 0 0 40px rgba(0, 0, 0, 0.35);
+}
+.cwheel__disc:disabled {
+  cursor: default;
+}
+.cwheel__spokes,
+.cwheel__winner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+}
+.cwheel__winner {
+  transition: opacity 320ms ease;
+}
+.cwheel__labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.cwheel__label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 84px;
+  margin: -9px 0 0 -42px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: var(--fw-bold);
+  line-height: 1.15;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.cwheel__hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 88px;
+  height: 88px;
+  margin: -44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  gap: 1px;
+  z-index: 3;
+  cursor: pointer;
+  background: var(--surface-1);
+  border: 3px solid var(--surface-3);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+}
+.cwheel__hub:disabled {
+  cursor: default;
+  opacity: 0.75;
+}
+.cwheel__hub.is-spinning {
+  opacity: 0.75;
+}
+.cwheel__hub-emoji {
+  font-size: 24px;
+  line-height: 1;
+}
+.cwheel__hub-text {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.cwheel__readout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -34px;
+  text-align: center;
+  font-size: var(--fs-md);
+  min-height: 24px;
+}
+.cwheel__readout strong {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: var(--fw-bold);
+}
+.cwheel__readout .muted {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-sm);
+}
+
+/* ---- Editor -------------------------------------------------------------- */
+.wheel-editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.wheel-editor__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.wheel-editor__field > span {
+  font-size: 12px;
+  font-weight: var(--fw-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.wheel-editor__field > span em {
+  text-transform: none;
+  letter-spacing: 0;
+  font-style: normal;
+  font-weight: var(--fw-medium);
+}
+.wheel-editor input[type='text'],
+.wheel-editor input:not([type]) {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--fs-md);
+}
+.wheel-editor__emoji {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--sp-2);
+}
+.wheel-editor__emoji-item {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 2px solid transparent;
+}
+.wheel-editor__emoji-item.is-active {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 12%, transparent);
+}
+.wheel-editor__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-height: 40vh;
+  overflow-y: auto;
+}
+.wheel-editor__option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.wheel-editor__remove {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+.wheel-editor__error {
+  font-size: var(--fs-sm);
+  color: var(--red-500, #e0525f);
+}
+
+/* ---- Range sliders in the session sheet ---------------------------------- */
+.session-range {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}
+.session-range__label {
+  width: 44px;
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.session-range input[type='range'] {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--primary);
+}
+.session-range output {
+  width: 46px;
+  flex: 0 0 auto;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-sm);
+}
+.session-range__value {
+  float: right;
+  font-weight: var(--fw-semibold);
+  color: var(--primary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.session-range__note {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-top: var(--sp-1);
+}
+.session-range__reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--sp-2);
+  font-size: 12px;
+  color: var(--text-secondary);
+}

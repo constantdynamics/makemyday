@@ -21,7 +21,7 @@ import { categoryName } from '../../../hooks/useCatalog';
 import { Button } from '../../../components/ui/Button';
 import { Icon } from '../../../components/icons/Icon';
 import { directionsUrl, formatDistance } from '../../../lib/geo';
-import { formatKm, transportLabel, formatMinutes } from '../../../lib/session';
+import { bandsInMetres, formatBandEdge, transportLabel, formatMinutes } from '../../../lib/session';
 import type { Spot } from '../usePick';
 import type { MechanicProps } from '../types';
 
@@ -150,8 +150,11 @@ export function QuestMechanic({
     onReset();
   };
 
+  // A short walking wheel reads in metres; anything longer reads in kilometres.
+  const metres = bandsInMetres(bands);
+  const unit = metres ? 'm' : 'km';
   const bandLabel = (i: number) =>
-    `${formatKm(bands[i].fromKm, lang)}–${formatKm(bands[i].toKm, lang)}`;
+    `${formatBandEdge(bands[i].fromKm, metres, lang)}–${formatBandEdge(bands[i].toKm, metres, lang)}`;
 
   const done = stage === 'result' && phase === 'done' && pick;
 
@@ -174,7 +177,7 @@ export function QuestMechanic({
         </li>
         <li className={stage === 'distance' ? 'is-active' : bandIndex != null ? 'is-done' : ''}>
           <span>2</span>
-          {bandIndex != null ? `${bandLabel(bandIndex)} km` : t('quest.stepDistance')}
+          {bandIndex != null ? `${bandLabel(bandIndex)} ${unit}` : t('quest.stepDistance')}
         </li>
       </ol>
 
@@ -291,7 +294,7 @@ export function QuestMechanic({
             <>
               <p className="quest__verdict">
                 {t('quest.verdict', {
-                  distance: bandLabel(bandIndex),
+                  distance: `${bandLabel(bandIndex)} ${unit}`,
                   direction: t(`quest.name.${octant}`),
                 })}
               </p>

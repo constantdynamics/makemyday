@@ -5,6 +5,7 @@ import { useI18n } from '../../i18n';
 const ITEMS = [
   { to: '/app', icon: 'home', key: 'nav.home', end: true },
   { to: '/app/explore', icon: 'search', key: 'nav.explore' },
+  { to: '/app/play', icon: 'dice', key: 'nav.play' },
   { to: '/app/challenges', icon: 'target', key: 'nav.challenges' },
   { to: '/app/community', icon: 'users', key: 'nav.community' },
   { to: '/app/profile', icon: 'user', key: 'nav.profile' },
